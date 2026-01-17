@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "classes": ["FACTUAL", "LOW_VALUE", "REASONING"],
+  "weights": {
+    "FACTUAL":   { "b": 0.0, "w": [0.0, 0.0, 0.0] },
+    "LOW_VALUE": { "b": 0.0, "w": [0.0, 0.0, 0.0] },
+    "REASONING": { "b": 0.0, "w": [0.0, 0.0, 0.0] }
+  }
+}
