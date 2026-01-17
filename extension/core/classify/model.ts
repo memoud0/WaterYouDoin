@@ -1,4 +1,4 @@
-import { clamp01 } from  "./thesholds"
+import { clamp01 } from  "./thresholds"
 
 export type ModelClass = "FACTUAL" | "LOW_VALUE" | "REASONING";
 

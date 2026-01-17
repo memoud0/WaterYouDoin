@@ -1,5 +1,5 @@
 import { Features } from "./features";
-import { clamp01 } from "./thesholds";
+import { clamp01 } from "./thresholds";
 
 // LOW-VALUE patterns: keep these strict to avoid false blocks.
 const LOW_VALUE_EXACT = new Set([
