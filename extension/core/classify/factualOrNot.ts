@@ -30,7 +30,7 @@ export function factualOrNot(promptRaw: string, ctx: ClassifyContext = {}): Clas
   const normalized = normalize(promptRaw);
   const f = extractFeatures(normalized);
 
-  // ---- 1) Duplicate check FIRST (so it always tags duplicates)
+  // 1) Duplicate check FIRST
   const hash = fnv1a32(normalized);
   if (ctx.lastHash && ctx.lastTimestamp && ctx.lastHash === hash && now - ctx.lastTimestamp <= duplicateWindowMs) {
     return {
@@ -40,7 +40,7 @@ export function factualOrNot(promptRaw: string, ctx: ClassifyContext = {}): Clas
     };
   }
 
-  // ---- 2) Low-value early exit
+  // 2) Low-value early exit
   const low = lowValueScore(normalized, f);
   signals.push(...low.signals);
 
@@ -54,19 +54,19 @@ export function factualOrNot(promptRaw: string, ctx: ClassifyContext = {}): Clas
     };
   }
 
-  // ---- 3) Heuristic scores
+  // 3) Heuristic scores
   const fact = factualScore(normalized, f);
   const reas = reasoningScore(normalized, f);
   signals.push(...fact.signals, ...reas.signals);
 
-  // normalize raw scores by their sum so a strong class can exceed 0.75.
+  // Normalize heuristic “strength scores” into probabilities
   const heurProbs = normalizeScores3({
     FACTUAL: fact.score,
     LOW_VALUE: low.score,
     REASONING: reas.score,
   });
 
-  // ---- 4) Optional ML fallback when heuristics are unsure
+  // 4) Optional ML fallback when heuristics are unsure
   let finalProbs = { ...heurProbs };
   const heurMax = Math.max(finalProbs.FACTUAL, finalProbs.LOW_VALUE, finalProbs.REASONING);
 
@@ -77,6 +77,7 @@ export function factualOrNot(promptRaw: string, ctx: ClassifyContext = {}): Clas
       signals.push(...ml.signals);
       const mlNorm = normalize3(ml.probs);
 
+      // Blend (heuristics still primary)
       finalProbs = {
         FACTUAL: 0.75 * heurProbs.FACTUAL + 0.25 * mlNorm.FACTUAL,
         LOW_VALUE: 0.75 * heurProbs.LOW_VALUE + 0.25 * mlNorm.LOW_VALUE,
@@ -108,14 +109,12 @@ function featureVector(f: ReturnType<typeof extractFeatures>): number[] {
     f.hasErrorWords ? 1 : 0,
     f.hasCompareWords ? 1 : 0,
     f.hasBuildVerbs ? 1 : 0,
+    f.hasLookupPhrase ? 1 : 0,
+    f.isStrongLookupStart ? 1 : 0,
   ];
 }
 
-// Normalize raw heuristic “strength scores” into probabilities.
-// Add tiny epsilon so division is safe even if all are 0.
 function normalizeScores3(scores: Record<Classification, number>): Record<Classification, number> {
-  // Small priors prevent "everything is 0 except low-value is 0.2" from becoming ~1.0 low-value.
-  // This makes short-but-meaningful prompts fall into REASONING (nudge) instead of LOW_VALUE (block).
   const PRIOR_FACTUAL = 0.05;
   const PRIOR_REASONING = 0.10;
   const PRIOR_LOW_VALUE = 0.00;
@@ -132,7 +131,6 @@ function normalizeScores3(scores: Record<Classification, number>): Record<Classi
     REASONING: r / sum,
   };
 }
-
 
 function normalize3(p: Record<Classification, number>): Record<Classification, number> {
   const sum = p.FACTUAL + p.LOW_VALUE + p.REASONING || 1;
