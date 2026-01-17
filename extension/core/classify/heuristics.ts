@@ -1,5 +1,3 @@
-// extension/core/classify/heuristics.ts
-
 import { Features } from "./features";
 import { clamp01 } from "./thesholds";
 

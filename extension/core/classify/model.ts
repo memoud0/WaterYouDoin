@@ -1,5 +1,3 @@
-// extension/core/classify/model.ts
-
 import { clamp01 } from  "./thesholds"
 
 export type ModelClass = "FACTUAL" | "LOW_VALUE" | "REASONING";

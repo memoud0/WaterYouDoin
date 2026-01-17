@@ -1,9 +1,9 @@
-// extension/core/classify/factualOrNot.ts
-
 import { extractFeatures } from "./features";
 import { factualScore, lowValueScore, reasoningScore } from "./heuristics";
-import { DEFAULT_THRESHOLDS, applyStrictness, Classification, clamp01 } from "./thesholds";
+import { DEFAULT_THRESHOLDS, applyStrictness, Classification, clamp01 } from "./thresholds";
 import { mlPredictProbs, ModelWeights } from "./model";
+import { normalize } from "../utils/text";
+import { fnv1a32 } from "../utils/hash";
 
 /**
  * Context gives you optional duplicate detection + threshold tuning.
@@ -27,28 +27,8 @@ export type ClassificationResult = {
   classification: Classification;
   confidence: number; // 0..1
   signals: string[];
-  // Optional: useful in logs
   probs?: Record<Classification, number>;
 };
-
-export function normalize(raw: string): string {
-  if (!raw) return "";
-  let s = raw.normalize("NFKC").toLowerCase().trim();
-  s = s.replace(/\s+/g, " ");
-  s = s.replace(/^[\s"'`“”‘’.,!?():;\[\]{}]+/, "");
-  s = s.replace(/[\s"'`“”‘’.,!?():;\[\]{}]+$/, "");
-  return s;
-}
-
-// Simple local hash (use your utils/hash if you already have it)
-export function fnv1a32(str: string): string {
-  let hash = 0x811c9dc5;
-  for (let i = 0; i < str.length; i++) {
-    hash ^= str.charCodeAt(i);
-    hash = (hash + (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24)) >>> 0;
-  }
-  return hash.toString(16).padStart(8, "0");
-}
 
 /**
  * MAIN: classify prompt into FACTUAL / LOW_VALUE / REASONING.
@@ -68,7 +48,7 @@ export function factualOrNot(promptRaw: string, ctx: ClassifyContext = {}): Clas
 
   // ---- 2) Duplicate check (optional but strong)
   const hash = fnv1a32(normalized);
-  if (ctx.lastHash && ctx.lastTimestamp && ctx.lastHash === hash && (now - ctx.lastTimestamp) <= duplicateWindowMs) {
+  if (ctx.lastHash && ctx.lastTimestamp && ctx.lastHash === hash && now - ctx.lastTimestamp <= duplicateWindowMs) {
     return {
       classification: "LOW_VALUE",
       confidence: 0.95,
@@ -129,8 +109,8 @@ export function factualOrNot(promptRaw: string, ctx: ClassifyContext = {}): Clas
   const best = argmax3(finalProbs);
   const confidence = clamp01(finalProbs[best]);
 
-  // Blueprint rule: if factual >= threshold => FACTUAL, else if low-value >= threshold => LOW_VALUE, else REASONING.
-  // We also bias toward REASONING when unsure (safer UX).
+  // Blueprint rule: if low-value >= threshold => LOW_VALUE, else if factual >= threshold => FACTUAL, else REASONING.
+  // Also: bias toward REASONING when unsure (safer UX than redirect/block).
   if (finalProbs.LOW_VALUE >= thresholds.lowValue) {
     return { classification: "LOW_VALUE", confidence: finalProbs.LOW_VALUE, signals, probs: finalProbs };
   }
@@ -155,7 +135,6 @@ function featureVector(f: ReturnType<typeof extractFeatures>): number[] {
 }
 
 function softmax3(scores: Record<Classification, number>): Record<Classification, number> {
-  // subtract max for stability
   const m = Math.max(scores.FACTUAL, scores.LOW_VALUE, scores.REASONING);
   const eF = Math.exp(scores.FACTUAL - m);
   const eL = Math.exp(scores.LOW_VALUE - m);
@@ -169,7 +148,7 @@ function softmax3(scores: Record<Classification, number>): Record<Classification
 }
 
 function normalize3(p: Record<Classification, number>): Record<Classification, number> {
-  const sum = (p.FACTUAL + p.LOW_VALUE + p.REASONING) || 1;
+  const sum = p.FACTUAL + p.LOW_VALUE + p.REASONING || 1;
   return {
     FACTUAL: p.FACTUAL / sum,
     LOW_VALUE: p.LOW_VALUE / sum,
