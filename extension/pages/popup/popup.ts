@@ -42,7 +42,8 @@ function renderStats(stats: Awaited<ReturnType<typeof getStats>>) {
   const statusEl = document.getElementById("mascot-status");
 
   if (imgEl && statusEl) {
-    const state = stats.severity.mascotState;
+    const rawState = stats.severity.mascotState;
+    const state: MascotState = rawState === "THINKING" ? "SOLID" : rawState;
     const nextSrc = MASCOT_IMAGES[state] || MASCOT_IMAGES["SOLID"];
     if (imgEl.src !== nextSrc) {
       imgEl.style.opacity = "0";
