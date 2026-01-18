@@ -36,5 +36,12 @@
 
   "icons": {
     "16": "extension/assets/icons/ICECUBE.PNG"
-  }
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["extension/assets/mascot/*.png", "extension/assets/mascot/*.PNG"],
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"]
+    }
+  ]
 }

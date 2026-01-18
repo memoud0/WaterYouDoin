@@ -202,7 +202,7 @@ function createNudgeUI() {
 
   const mascot = document.createElement("img");
   mascot.className = "mascot";
-  mascot.src = chrome.runtime.getURL("extension/assets/mascot/ICECUBE.PNG");
+  mascot.src = chrome.runtime.getURL("extension/assets/mascot/cube-thinking.png");
 
   const body = document.createElement("div");
   body.className = "body";
@@ -323,8 +323,8 @@ function createNudgeUI() {
     searchUrl = url;
     onAskAi = onAsk;
     anchor = anchorEl ?? anchor;
-    mascot.src = chrome.runtime.getURL("extension/assets/mascot/ICECUBE.PNG");
-    title.textContent = "Top 5 Dogpile results";
+    mascot.src = chrome.runtime.getURL("extension/assets/mascot/cube-thinking.png");
+    title.textContent = "This looks factual";
     subtitle.textContent = "Here are the top 5 Dogpile results with the site name and full URL.";
     renderResults(results, promptForMetrics);
     resultsList.style.display = "block";
@@ -343,7 +343,7 @@ function createNudgeUI() {
     searchUrl = undefined;
     onAskAi = onAsk;
     anchor = anchorEl ?? anchor;
-    mascot.src = chrome.runtime.getURL("extension/assets/mascot/ICECUBE.PNG");
+    mascot.src = chrome.runtime.getURL("extension/assets/mascot/cube-thinking.png");
     title.textContent = titleText;
     subtitle.textContent = subtitleText;
     resultsList.innerHTML = "";
