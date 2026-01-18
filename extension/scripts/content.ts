@@ -88,6 +88,7 @@ function createNudgeUI() {
     .mascot {
       width: 68px;
       height: 68px;
+      margin: 10px;
       object-fit: contain;
       flex-shrink: 0;
       filter: drop-shadow(0px 3px 5px #1b66b6ff);
@@ -209,7 +210,7 @@ function createNudgeUI() {
     .button.primary {
       background: #3782D1;
       color: #EDF9FF;
-      box-shadow: 0 8px 18px rgba(22,123,210,0.25);
+      box-shadow: 0 8px 18px rgba(0, 89, 167, 0.3);
     }
     .button.secondary {
       background: #EDF9FF;
@@ -432,26 +433,26 @@ function pickNudgeCopy(
   if (classification === "LOW_VALUE") {
     if (has("duplicate_prompt")) {
       return {
-        title: "Looks like a duplicate",
+        title: "Looks like a duplicate!",
         subtitle: "You just asked this. Skip the repeat or tweak it slightly before sending.",
       };
     }
     return {
-      title: "Maybe skip this prompt",
-      subtitle: "Doesn’t seem worth AI cycles. If you still need it, tighten the ask first.",
+      title: "Maybe skip this prompt?",
+      subtitle: "Doesn't seem worth AI cycles. If you still need it, tighten the ask first.",
     };
   }
 
   // REASONING
   if (has("has_code_tokens") || has("has_error_words") || has("has_build_verbs")) {
     return {
-      title: "Heavy lifting ahead",
-      subtitle: "Break it into steps or isolate the failing part, then send. You’ll get a better answer.",
+      title: "Heavy lifting ahead!",
+      subtitle: "Break it into steps or isolate the failing part, then send. You'll get a better answer.",
     };
   }
   return {
-    title: "Take a beat before asking AI",
-    subtitle: "Refine the question or outline your steps. Then send if you still need help.",
+    title: "Take a beat before asking AI...",
+    subtitle: "Try to refine the question or outline your steps. Then send if you still need help.",
   };
 }
 
