@@ -9,15 +9,39 @@ body {
 /* ---------- FRAME ---------- */
 
 .top-frame {
+  position: relative; /* Needed for settings button positioning */
   width: 360px;
   min-height: 520px;
-  /* border-radius: 22px; */
   padding: 25px;
   background-color: #edf9ff;
-  background-image: url("assets/waves.png");
+  /* FIXED PATH: Go up 2 levels to find assets */
+  background-image: url("/extension/assets/waves.png"); 
   background-repeat: no-repeat;
   background-size: 100%;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* ---------- SETTINGS BUTTON (NEW) ---------- */
+#settings-btn {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    cursor: pointer;
+    z-index: 100;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.logo {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+#settings-btn:hover {
+    opacity: 1;
+    transform: rotate(20deg) scale(1.1);
 }
 
 /* ---------- TITLE ---------- */
@@ -30,11 +54,11 @@ body {
   margin-bottom: 70px;
 }
 
-/* ---------- HERO ROW (KEY FIX) ---------- */
+/* ---------- HERO ROW ---------- */
 
 .row.hero {
   display: flex;
-  justify-content: center;   /* centers image + text together */
+  justify-content: center;
   align-items: center;
   gap: 24px;
   margin-bottom: 28px;
@@ -49,7 +73,7 @@ body {
 .column-text {
   display: flex;
   flex-direction: column;
-  align-items: center;      /* centers text vertically */
+  align-items: center;
   text-align: center;
 }
 
@@ -98,8 +122,6 @@ body {
 
 /* ---------- SEVERITY BAR ---------- */
 
-/* ---------- SEVERITY BAR ---------- */
-
 .severity-wrap {
   position: relative;
   display: flex;
@@ -114,16 +136,15 @@ body {
 
 .severity-slider {
   position: absolute;
-  bottom: -10px;           /* sits under the bar like your mock */
-  left: 50%;               /* CENTER by default */
+  bottom: -5px; 
+  left: 0%; /* Will be updated by JS */
   transform: translateX(-50%);
-  width: 24px;             /* match your PNG size */
+  width: 24px;
   height: auto;
-  pointer-events: none;    /* slider is visual only (for now) */
+  pointer-events: none;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.20));
-
+  transition: left 0.5s ease-out; /* Smooth movement */
 }
-
 
 /* ---------- FOOTER ---------- */
 
@@ -132,9 +153,4 @@ body {
   text-align: center;
   font-size: 16px;
   color: #005dad;
-}
-
-
-.top-frame {
-  overflow: hidden;
 }

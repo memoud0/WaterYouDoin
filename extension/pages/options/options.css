@@ -1,0 +1,101 @@
+body {
+  font-family: "Quicksand", sans-serif;
+  background-color: #f4f8fb;
+  color: #333;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+button, input, select, textarea {
+  font-family: "Quicksand", sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  color: #005DAD;
+  margin: 0;
+  font-weight: 700;
+}
+
+.card {
+  background: white;
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: #005DAD;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+label {
+  font-weight: 500;
+}
+
+select, input[type="checkbox"] {
+  padding: 5px;
+  cursor: pointer;
+}
+
+.desc {
+  font-size: 12px;
+  color: #666;
+  margin-top: -5px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+button {
+  background-color: #005DAD;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #004a8d;
+}
+
+#status {
+  font-weight: bold;
+  color: green;
+}
+
+.logo {
+  width: 48px;
+  height: auto;
+}
