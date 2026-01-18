@@ -30,11 +30,15 @@
 
         <div class="column-text">
           <div class="top-text">You have saved</div>
-          <div id="water-count" class="top-text-stat">0ml</div>
+          <div class="water-row">
+            <div id="water-count" class="top-text-stat">0ml</div>
+            <button id="water-info" class="info-btn" title="Water saved is estimated using ~0.5 L per 1000 tokens avoided, counted locally with a lightweight token estimate (no network).">?</button>
+          </div>
           <div class="top-text">
             of water so far.<br />
             <strong id="mascot-status">Great job!</strong>
           </div>
+          <div class="top-text water-today">Saved today: <span id="water-today">0ml</span></div>
         </div>
       </div>
 
@@ -68,6 +72,10 @@
           class="severity-slider"
           alt="Severity slider"
         />
+      </div>
+      <div class="severity-hint">
+        <span class="hint-text">The ice cube cools down over time</span>
+        <button class="info-btn" title="Severity rises when you ask anyway or repeat low-value prompts, drops when you redirect or try yourself, and decays over time.">?</button>
       </div>
 
       <div class="footer-text">

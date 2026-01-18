@@ -1,3 +1,5 @@
+import { migrateStats } from "./migrate";
+
 export type MascotState = "SOLID" | "THINKING" | "MELTING" | "DROPLET";
 export type PromptType = "FACTUAL" | "LOW_VALUE" | "REASONING";
 
@@ -20,17 +22,20 @@ export interface WaterStats {
   litersPerAvoidedCall: number;
   litersSavedLifetime: number;
   litersSavedDaily: number;
+  litersPerThousandTokens: number;
+  tokensAvoidedLifetime: number;
+  tokensAvoidedDaily: number;
 }
 
 export interface SeverityStats {
   score: number;
   mascotState: MascotState;
+  lastUpdated?: number;
 }
 
 export interface AppSettings {
   enabled: boolean;
   enableNudge: boolean;
-  nudgeWaitMs: number;
   searchProvider: "DOGPILE" | "GOOGLE";
   debugLogs: boolean;
 }
@@ -74,18 +79,21 @@ export const DEFAULT_STATS: StoredStats = {
     duplicateBlocked: 0,
   },
   water: {
-    litersPerAvoidedCall: 0.5,
+    litersPerAvoidedCall: 0.5, // legacy; kept for backward compatibility
+    litersPerThousandTokens: 0.5,
+    tokensAvoidedLifetime: 0,
+    tokensAvoidedDaily: 0,
     litersSavedLifetime: 0,
     litersSavedDaily: 0,
   },
   severity: {
     score: 0,
     mascotState: "SOLID",
+    lastUpdated: Date.now(),
   },
   settings: {
     enabled: true,
     enableNudge: true,
-    nudgeWaitMs: 90000,
     searchProvider: "DOGPILE",
     debugLogs: true,
   },
@@ -118,13 +126,14 @@ export function resetTodayIfNeeded(s: StoredStats): StoredStats {
     water: {
       ...s.water,
       litersSavedDaily: 0,
+      tokensAvoidedDaily: 0,
     },
   };
 }
 
 export async function getStats(): Promise<StoredStats> {
   const res = await chrome.storage.local.get(STORAGE_KEY);
-  const s = (res?.[STORAGE_KEY] as StoredStats) ?? DEFAULT_STATS;
+  const s = migrateStats((res?.[STORAGE_KEY] as StoredStats) ?? DEFAULT_STATS);
   const fixed = resetTodayIfNeeded(s);
   if (fixed !== s) await chrome.storage.local.set({ [STORAGE_KEY]: fixed });
   return fixed;

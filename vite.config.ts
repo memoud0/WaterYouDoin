@@ -37,9 +37,12 @@ export default defineConfig({
         {
           src: "extension/assets",
           dest: "extension"
+        },
+        {
+          src: "extension/pages/nudge",
+          dest: "extension/pages"
         }
       ]
     })
   ]
 });
-

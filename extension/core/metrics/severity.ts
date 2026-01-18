@@ -2,11 +2,17 @@ import { StoredStats, MascotState } from "../storage/schema";
 
 const THRESHOLDS = {
   SOLID: 0,
-  MELTING: 50,
-  DROPLET: 75,
+  MELTING: 60,
+  DROPLET: 85,
 };
 
+const DECAY_PER_HOUR = 12; // score points reduced per hour of inactivity
+
 export const recalculteSeverity = (stats: StoredStats): StoredStats => {
+  const now = Date.now();
+  const lastUpdated = stats.severity.lastUpdated ?? now;
+  const hoursElapsed = Math.max(0, (now - lastUpdated) / (1000 * 60 * 60));
+
   let score = 0;
 
   // Negative actions
@@ -17,6 +23,11 @@ export const recalculteSeverity = (stats: StoredStats): StoredStats => {
   // Positive actions
   score -= stats.today.tryMyselfClicks * 12;
   score -= stats.today.factualRedirects * 6;
+
+  // Decay over time
+  if (hoursElapsed > 0) {
+    score = Math.max(0, score - DECAY_PER_HOUR * hoursElapsed);
+  }
 
   // Clamp
   score = Math.max(0, Math.min(100, score));
@@ -39,6 +50,7 @@ export const recalculteSeverity = (stats: StoredStats): StoredStats => {
     severity: {
       score,
       mascotState: newState,
+      lastUpdated: now,
     },
   };
 };

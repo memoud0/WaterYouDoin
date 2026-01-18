@@ -35,7 +35,7 @@ export type DecisionBase = {
 export type DecisionMsg =
   | (DecisionBase & { action: "ALLOW" })
   | (DecisionBase & { action: "BLOCK_LOW_VALUE"; reason: string })
-  | (DecisionBase & { action: "SHOW_NUDGE"; nudgeId: string; suggestedWaitMs: number })
+  | (DecisionBase & { action: "SHOW_NUDGE"; nudgeId: string })
   | (DecisionBase & { action: "REDIRECT"; url: string });
 
 export type NudgeResultMsg = {

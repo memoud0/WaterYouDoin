@@ -13,11 +13,11 @@ body {
   width: 360px;
   min-height: 520px;
   padding: 25px;
-  background-color: #edf9ff;
-  /* FIXED PATH: Go up 2 levels to find assets */
-  background-image: url("/extension/assets/waves.png"); 
+  background: linear-gradient(180deg, #7bbdf5 0%, #dff1ff 38%, #edf9ff 100%);
+  background-image: url("/extension/assets/waves.png"), linear-gradient(180deg, #7bbdf5 0%, #dff1ff 38%, #edf9ff 100%);
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: 100%, cover;
+  border-radius: 18px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
@@ -50,7 +50,7 @@ body {
   font-size: 32px;
   font-weight: 700;
   text-align: center;
-  color: #edf9ff;
+  color: #f2fbff;
   margin-bottom: 70px;
 }
 
@@ -82,6 +82,7 @@ body {
 .top-cube {
   width: 120px;
   height: auto;
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
 /* ---------- TEXT ---------- */
@@ -89,7 +90,7 @@ body {
 .top-text {
   font-size: 18px;
   line-height: 28px;
-  color: #005dad;
+  color: #0e3560;
 }
 
 .top-text-stat {
@@ -97,6 +98,35 @@ body {
   font-weight: 700;
   margin: 4px 0;
   color: #005dad;
+}
+
+.water-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-btn {
+  border: none;
+  background: rgba(255, 255, 255, 0.8);
+  color: #0d2b4d;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.info-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
+}
+
+.water-today {
+  margin-top: 4px;
+  color: #0e3560;
 }
 
 /* ---------- STATS ---------- */
@@ -152,5 +182,20 @@ body {
   margin-top: 12px;
   text-align: center;
   font-size: 16px;
-  color: #005dad;
+  color: #0e3560;
+}
+
+.severity-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: -8px;
+  margin-bottom: 8px;
+  color: #0e3560;
+  font-size: 14px;
+}
+
+.hint-text {
+  color: #0e3560;
 }

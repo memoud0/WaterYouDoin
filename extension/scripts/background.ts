@@ -1,6 +1,6 @@
 import { classifyComposite } from "../core/classify/segments";
 import MODEL_WEIGHTS from "../core/classify/modelWeights";
-import { buildSearchUrl } from "../core/redirect/search";
+import { buildSearchUrl, fetchTopSearchResults, SearchProvider, SearchResult } from "../core/redirect/search";
 import { getStats, updateStats, StoredStats } from "../core/storage/schema";
 import {
   recordFactualRedirect,
@@ -16,7 +16,8 @@ import { fnv1a32 } from "../core/utils/hash";
 type BackgroundMsg =
   | { type: "GET_STATS" }
   | { type: "PROMPT_SUBMIT"; prompt: string; timestamp?: number }
-  | { type: "NUDGE_RESULT"; choice: "TRY_MYSELF" | "ASK_AI_ANYWAY"; waitedMs?: number };
+  | { type: "NUDGE_RESULT"; choice: "TRY_MYSELF" | "ASK_AI_ANYWAY"; waitedMs?: number }
+  | { type: "FACTUAL_RESULT_CLICK"; prompt?: string };
 
 type DecisionPayload = {
   type: "DECISION";
@@ -27,8 +28,9 @@ type DecisionPayload = {
   probs?: Record<"FACTUAL" | "LOW_VALUE" | "REASONING", number>;
   reason?: string;
   url?: string;
+  searchProvider?: SearchProvider;
+  searchResults?: SearchResult[];
   nudgeId?: string;
-  suggestedWaitMs?: number;
   segments?: unknown;
   metricsSnapshot?: StoredStats;
 };
@@ -58,6 +60,13 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
       } else {
         stats = await recordAskAIAnyway();
       }
+      broadcastMetrics(stats);
+      sendResponse({ ok: true, metricsSnapshot: stats });
+      return;
+    }
+
+    if (msg.type === "FACTUAL_RESULT_CLICK") {
+      const stats = await recordFactualRedirect(msg.prompt);
       broadcastMetrics(stats);
       sendResponse({ ok: true, metricsSnapshot: stats });
       return;
@@ -107,7 +116,7 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
 
     // Duplicate (special-cased)
     if (r.classification === "LOW_VALUE" && r.signals?.includes("duplicate_prompt")) {
-      const statsAfter = await recordDuplicateBlocked();
+      const statsAfter = await recordDuplicateBlocked(prompt);
       broadcastMetrics(statsAfter);
       const payload: DecisionPayload = {
         type: "DECISION",
@@ -126,7 +135,7 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
 
     // Low-value
     if (r.classification === "LOW_VALUE") {
-      const statsAfter = await recordLowValueBlock();
+      const statsAfter = await recordLowValueBlock(prompt);
       broadcastMetrics(statsAfter);
       const payload: DecisionPayload = {
         type: "DECISION",
@@ -143,27 +152,24 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
       return;
     }
 
-    // Factual → redirect
+    // Factual → fetch alternatives and show nudge (no stats increment until user decides)
     if (r.classification === "FACTUAL") {
-      const statsAfter = await recordFactualRedirect();
       const provider = stats.settings.searchProvider || "DOGPILE";
       const url = buildSearchUrl(provider, prompt);
+      const searchResults = await fetchTopSearchResults(provider, prompt, 5);
 
-      if (sender?.tab?.id != null) {
-        chrome.tabs.update(sender.tab.id, { url });
-      }
-
-      broadcastMetrics(statsAfter);
       const payload: DecisionPayload = {
         type: "DECISION",
-        action: "REDIRECT",
+        action: "SHOW_NUDGE",
         classification: r.classification,
         confidence: r.confidence,
         signals: r.signals,
         probs: r.probs,
         url,
+        searchProvider: provider,
+        searchResults,
         segments: r.segments,
-        metricsSnapshot: statsAfter,
+        metricsSnapshot: stats,
       };
       sendResponse(payload);
       return;
@@ -181,7 +187,6 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
         signals: r.signals,
         probs: r.probs,
         nudgeId: makeNudgeId(),
-        suggestedWaitMs: stats.settings.nudgeWaitMs,
         segments: r.segments,
         metricsSnapshot: statsAfter,
       };

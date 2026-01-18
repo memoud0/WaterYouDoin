@@ -9,7 +9,8 @@
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://chat.openai.com/*",
-    "https://www.dogpile.com/*"
+    "https://www.dogpile.com/*",
+    "https://www.google.com/*"
   ],
 
   "background": {

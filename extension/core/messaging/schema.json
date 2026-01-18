@@ -83,6 +83,9 @@
           "additionalProperties": false,
           "properties": {
             "litersPerAvoidedCall": { "type": "number" },
+            "litersPerThousandTokens": { "type": "number" },
+            "tokensAvoidedLifetime": { "type": "number" },
+            "tokensAvoidedDaily": { "type": "number" },
             "litersSavedLifetime": { "type": "number" },
             "litersSavedDaily": { "type": "number" }
           }
@@ -92,7 +95,8 @@
           "additionalProperties": false,
           "properties": {
             "score": { "type": "number" },
-            "mascotState": { "$ref": "#/definitions/MascotState" }
+            "mascotState": { "$ref": "#/definitions/MascotState" },
+            "lastUpdated": { "type": "number" }
           }
         },
         "settings": {
@@ -101,7 +105,6 @@
           "properties": {
             "enabled": { "type": "boolean" },
             "enableNudge": { "type": "boolean" },
-            "nudgeWaitMs": { "type": "number" },
             "searchProvider": { "type": "string", "enum": ["DOGPILE", "GOOGLE"] },
             "debugLogs": { "type": "boolean" }
           }
@@ -186,12 +189,11 @@
         {
           "type": "object",
           "additionalProperties": false,
-          "required": ["type", "action", "classification", "confidence", "signals", "nudgeId", "suggestedWaitMs"],
+          "required": ["type", "action", "classification", "confidence", "signals", "nudgeId"],
           "properties": {
             "type": { "const": "DECISION" },
             "action": { "const": "SHOW_NUDGE" },
             "nudgeId": { "type": "string" },
-            "suggestedWaitMs": { "type": "number" },
             "classification": { "$ref": "#/definitions/PromptType" },
             "confidence": { "type": "number" },
             "signals": { "type": "array", "items": { "type": "string" } },
