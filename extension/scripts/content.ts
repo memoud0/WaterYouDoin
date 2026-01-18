@@ -42,11 +42,16 @@ function createNudgeUI() {
   host.id = "wy-nudge-root";
   const shadow = host.attachShadow({ mode: "open" });
 
+  const fontLink = document.createElement("link");
+  fontLink.rel = "stylesheet";
+  fontLink.href = "https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap";
+  document.head.appendChild(fontLink);
+
+
   const style = document.createElement("style");
   style.textContent = `
     :host { all: initial; }
     *, *::before, *::after { box-sizing: border-box; }
-    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap');
 
     @keyframes wy-fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -55,7 +60,7 @@ function createNudgeUI() {
       z-index: 999999;
       max-width: 440px;
       width: min(440px, calc(100vw - 24px));
-      font-family: "Quicksand", system-ui, -apple-system, sans-serif;
+      font-family: "Quicksand", sans-serif;
       transition: opacity 160ms ease, transform 160ms ease, visibility 160ms ease;
       opacity: 0;
       visibility: hidden;
@@ -68,7 +73,7 @@ function createNudgeUI() {
       transform: translateY(0);
     }
     .card {
-      background: linear-gradient(135deg, #74bdf9, #d4ecff);
+      background: linear-gradient(135deg, #8cdcffb3, #4899e0cc);
       border-radius: 18px;
       box-shadow: 0 10px 28px rgba(0,0,0,0.18);
       padding: 12px;
@@ -77,46 +82,60 @@ function createNudgeUI() {
       gap: 10px;
       align-items: center;
       color: #0d2b4d;
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
     }
+
     .mascot {
       width: 68px;
       height: 68px;
       object-fit: contain;
       flex-shrink: 0;
+      filter: drop-shadow(0px 3px 5px #1b66b6ff);
     }
     .body {
       flex: 1;
       min-width: 0;
     }
     .title {
+      font-family: "Quicksand", sans-serif;
       font-weight: 700;
-      font-size: 16px;
-      color: #0d2b4d;
+      font-size: 18px;
+      color: #00367f;
       margin: 0 0 4px 0;
       line-height: 1.3;
     }
     .subtitle {
-      font-size: 13px;
-      color: #163a62;
+      font-family: "Quicksand", sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: #00367f;
       margin: 0;
       line-height: 1.35;
     }
+
     .close {
       background: none;
       border: none;
+      position: absolute;
+      top: 3px;
+      right: 8px;
       cursor: pointer;
       padding: 4px;
       line-height: 1;
-      color: #0d2b4d;
-      font-size: 18px;
+      color: #005DAD;
+      font-size: 24px;
       transition: transform 120ms ease, color 120ms ease;
     }
+
     .close:hover { transform: scale(1.05); color: #002b59; }
+
     .results {
       margin-top: 10px;
       background: #fff;
       border-radius: 12px;
       padding: 10px;
+      margin-bottom: 10px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
       display: flex;
       flex-direction: column;
@@ -124,6 +143,7 @@ function createNudgeUI() {
       max-height: 48vh;
       overflow-y: auto;
     }
+
     .result {
       display: block;
       text-decoration: none;
@@ -131,15 +151,18 @@ function createNudgeUI() {
       border: 1px solid #d2ecff;
       border-radius: 10px;
       padding: 10px 12px;
-      color: #0d2b4d;
+      margin-bottom: 10px;
+      color: #005DAD;
       transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease, background 120ms ease;
     }
+
     .result:hover {
       border-color: #61aef3;
       box-shadow: 0 6px 18px rgba(0,0,0,0.08);
       transform: translateY(-1px);
       background: #eef7ff;
     }
+
     .result-title {
       font-weight: 700;
       font-size: 14px;
@@ -147,6 +170,7 @@ function createNudgeUI() {
       margin-bottom: 4px;
       line-height: 1.3;
     }
+
     .result-url {
       font-size: 12px;
       color: #3172c4;
@@ -172,23 +196,25 @@ function createNudgeUI() {
       margin-top: 10px;
       flex-wrap: wrap;
     }
-    .button {
+    .button{
+      font-family: "Quicksand", sans-serif;
       border: none;
-      border-radius: 10px;
+      border-radius: 15px;
       padding: 10px 12px;
       font-weight: 700;
       cursor: pointer;
       transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
       font-size: 13px;
     }
+
     .button.primary {
-      background: #61aef3;
-      color: white;
+      background: #3782D1;
+      color: #EDF9FF;
       box-shadow: 0 8px 18px rgba(22,123,210,0.25);
     }
     .button.secondary {
-      background: #ffffff;
-      color: #005dad;
+      background: #EDF9FF;
+      color: #3782D1;
       border: 1px solid #61aef3;
     }
     .button:hover { transform: translateY(-1px); }
@@ -213,7 +239,7 @@ function createNudgeUI() {
 
   const subtitle = document.createElement("div");
   subtitle.className = "subtitle";
-  subtitle.textContent = "Here are the top 5 Dogpile results with the site name and full URL.";
+  subtitle.textContent = "Here are the top 5 Dogpile results with their site name and full URL.";
 
   const resultsList = document.createElement("div");
   resultsList.className = "results";
@@ -231,7 +257,7 @@ function createNudgeUI() {
 
   actions.append(openSearchBtn, askAiBtn);
 
-  const closeBtn = document.createElement("button");
+  const closeBtn = document.createElement("button-close");
   closeBtn.className = "close";
   closeBtn.textContent = "×";
   closeBtn.title = "Close";
@@ -324,8 +350,8 @@ function createNudgeUI() {
     onAskAi = onAsk;
     anchor = anchorEl ?? anchor;
     mascot.src = chrome.runtime.getURL("extension/assets/mascot/cube-thinking.png");
-    title.textContent = "This looks factual";
-    subtitle.textContent = "Here are the top 5 Dogpile results with the site name and full URL.";
+    title.textContent = "This looks factual!";
+    subtitle.textContent = "Here are the top 5 Dogpile results with their site name and full URL.";
     renderResults(results, promptForMetrics);
     resultsList.style.display = "block";
     openSearchBtn.style.display = url ? "inline-block" : "none";

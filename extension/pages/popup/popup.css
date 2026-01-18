@@ -4,6 +4,8 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Quicksand", sans-serif;
+  height: 615px; 
+  overflow-y: hidden;
 }
 
 /* ---------- FRAME ---------- */
@@ -11,13 +13,18 @@ body {
 .top-frame {
   position: relative; /* Needed for settings button positioning */
   width: 360px;
-  min-height: 520px;
+  /* min-height: 520px; */
+  height: 100%;
+  box-sizing: border-box;
+
   padding: 25px;
+  padding-top: 20px;
   background: linear-gradient(180deg, #7bbdf5 0%, #dff1ff 38%, #edf9ff 100%);
-  background-image: url("/extension/assets/waves.png"), linear-gradient(180deg, #7bbdf5 0%, #dff1ff 38%, #edf9ff 100%);
-  background-repeat: no-repeat;
-  background-size: 100%, cover;
-  border-radius: 18px;
+  background-image: url("/extension/assets/waves.png"), linear-gradient(180deg, #edf9ff 0%, #dff1ff 50%, #6ac8ff9f 100%);
+  background-repeat: no-repeat, no-repeat;
+  background-size: 100% auto, 100% 100%;
+  background-position-y: -10px, 0px;
+  /* border-radius: 18px; */
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   overflow: hidden;
 }
@@ -51,7 +58,7 @@ body {
   font-weight: 700;
   text-align: center;
   color: #f2fbff;
-  margin-bottom: 70px;
+  margin-bottom: 60px;
 }
 
 /* ---------- HERO ROW ---------- */
@@ -94,7 +101,7 @@ body {
 }
 
 .top-text-stat {
-  font-size: 40px;
+  font-size: 32px;
   font-weight: 700;
   margin: 4px 0;
   color: #005dad;
@@ -132,7 +139,7 @@ body {
 /* ---------- STATS ---------- */
 
 .top-subtitle {
-  margin: 24px 0 12px;
+  margin: 24px 0 8px;
   font-weight: 700;
   font-size: 24px;
   text-align: center;
@@ -142,7 +149,7 @@ body {
 .three-column {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 24px;
+  /* margin-bottom: 24px; */
 }
 
 .column {
