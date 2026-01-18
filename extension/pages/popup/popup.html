@@ -3,16 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <title>WaterYouDoin</title>
-
     <link rel="stylesheet" href="popup.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
   </head>
 
   <body>
     <div class="top-frame">
       <div class="top-title">Hi, User!</div>
 
-      <div class="row">
-        <div class="column">
+      <!-- HERO ROW (centered as a unit) -->
+      <div class="row hero">
+        <div class="column-image">
           <img
             class="top-cube"
             src="../../assets/mascot/cube-smiling.png"
@@ -20,10 +23,51 @@
           />
         </div>
 
-        <div class="column body-text">
-          You have saved <strong>10L</strong> of water so far.<br />
-          <strong>Great job!</strong>
+        <div class="column-text">
+          <div class="top-text">You have saved</div>
+          <div class="top-text-stat">10L</div>
+          <div class="top-text">
+            of water so far.<br />
+            <strong>Great job!</strong>
+          </div>
         </div>
+      </div>
+
+      <div class="top-subtitle">Prompt Stats</div>
+
+      <div class="three-column">
+        <div class="column">
+          <div class="top-text-stat">8</div>
+          <div class="top-text">redirects</div>
+        </div>
+        <div class="column">
+          <div class="top-text-stat">6</div>
+          <div class="top-text">allowed</div>
+        </div>
+        <div class="column">
+          <div class="top-text-stat">14</div>
+          <div class="top-text">total</div>
+        </div>
+      </div>
+
+      <!-- Severity bar -->
+      <div class="severity-wrap">
+        <img
+          src="../../assets/icons/bar.png"
+          class="severity-bar"
+          alt="Severity bar"
+        />
+
+        <img
+          src="../../assets/icons/slider.png"
+          class="severity-slider"
+          alt="Severity slider"
+        />
+      </div>
+
+
+      <div class="footer-text">
+        Keep it up! You’re successfully limiting water usage.
       </div>
     </div>
   </body>
