@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "WaterYouDoin",
+  "version": "0.1.0",
+  "description": "Encourages intentional AI usage by intercepting low-value prompts.",
+
+  "permissions": ["storage", "tabs", "scripting"],
+
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://www.dogpile.com/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+
+  "action": {
+    "default_popup": "popup.html"
+  },
+
+  "icons": {
+    "16": "/assets/icons/ICECUBE.PNG"
+  }
+}
