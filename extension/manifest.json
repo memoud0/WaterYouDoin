@@ -28,7 +28,7 @@
   ],
 
   "action": {
-    "default_popup": "popup.html"
+    "default_popup": "extension/pages/popup/popup.html"
   },
 
   "icons": {
