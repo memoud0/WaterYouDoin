@@ -1,18 +1,40 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>WaterYouDoin</title>
-    <style>
-      body {
-        font-family: system-ui, sans-serif;
-        padding: 12px;
-        width: 220px;
-      }
-    </style>
-  </head>
-  <body>
-    <h3>WaterYouDoin</h3>
-    <p>Extension active.</p>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="popup" class="popup-frame opened">
+        <img class="popup-cube" src="extension/assets/mascot/cube-thinking.png">
+        <div class="popup-body">
+            <img id="popup-close-button" 
+                class="popup-close-button"
+                src="extension/assets/icons/button-close.png"
+            >
+            <div class="popup-title">
+                This looks reasoning-heavy!
+            </div>
+            <div class="body-text"> 
+                Try to rewrite this prompt by using clearer wording to avoid using too much computing power!
+            </div>
+        </div>  
+    </div>
+</body>
+
+<script>
+    const popup = document.getElementById("popup");
+    const closeBtn = document.getElementById("popup-close-button");
+
+    closeBtn.addEventListener("click", () => {
+        popup.classList.remove("opened");
+        popup.classList.add("closed");
+    });
+</script>
+
 </html>
