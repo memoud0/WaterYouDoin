@@ -1,8 +1,8 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>WaterYouDoin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IceGuard</title>
     <link rel="stylesheet" href="popup.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
@@ -11,24 +11,29 @@
 
   <body>
     <div class="top-frame">
+      
+      <div id="settings-btn" title="Open Settings">
+         <img src="../../assets/icons/settings.png" class="logo" alt="Settings">
+      </div>
+
       <div class="top-title">Hi, User!</div>
 
-      <!-- HERO ROW (centered as a unit) -->
       <div class="row hero">
         <div class="column-image">
           <img
+            id="mascot-image"
             class="top-cube"
-            src="../../assets/mascot/cube-smiling.png"
+            src="/extension/assets/mascot/cube-smiling.png"
             alt="Mascot"
           />
         </div>
 
         <div class="column-text">
           <div class="top-text">You have saved</div>
-          <div class="top-text-stat">10L</div>
+          <div id="water-count" class="top-text-stat">0ml</div>
           <div class="top-text">
             of water so far.<br />
-            <strong>Great job!</strong>
+            <strong id="mascot-status">Great job!</strong>
           </div>
         </div>
       </div>
@@ -37,20 +42,19 @@
 
       <div class="three-column">
         <div class="column">
-          <div class="top-text-stat">8</div>
+          <div id="stat-redirects" class="top-text-stat">0</div>
           <div class="top-text">redirects</div>
         </div>
         <div class="column">
-          <div class="top-text-stat">6</div>
+          <div id="stat-allowed" class="top-text-stat">0</div>
           <div class="top-text">allowed</div>
         </div>
         <div class="column">
-          <div class="top-text-stat">14</div>
+          <div id="stat-total" class="top-text-stat">0</div>
           <div class="top-text">total</div>
         </div>
       </div>
 
-      <!-- Severity bar -->
       <div class="severity-wrap">
         <img
           src="../../assets/icons/bar.png"
@@ -59,16 +63,18 @@
         />
 
         <img
+          id="severity-slider"
           src="../../assets/icons/slider.png"
           class="severity-slider"
           alt="Severity slider"
         />
       </div>
 
-
       <div class="footer-text">
         Keep it up! You’re successfully limiting water usage.
       </div>
     </div>
+    
+    <script type="module" src="popup.ts"></script>
   </body>
 </html>

@@ -1,41 +1,79 @@
-import { factualOrNot } from "../core/classify/factualOrNot";
+import { factualOrNot, ClassifyContext } from "../core/classify/factualOrNot";
 import MODEL_WEIGHTS from "../core/classify/modelWeights";
 import { buildSearchUrl } from "../core/redirect/search";
-
-import { getStats, updateStats } from "../core/storage/storage";
 
 import {
   recordFactualRedirect,
   recordLowValueBlock,
   recordReasoningNudge,
-  recordTryMyself,
-  recordAskAIAnyway,
-  recordDuplicateBlocked,
 } from "../core/metrics/counters";
-
-import { normalize } from "../core/utils/text";
-import { fnv1a32 } from "../core/utils/hash";
-
-function makeNudgeId(): string {
-  return `nudge_${Math.random().toString(16).slice(2)}_${Date.now()}`;
-}
 
 type BackgroundMsg =
   | { type: "GET_STATS" }
   | { type: "PROMPT_SUBMIT"; prompt: string; timestamp: number }
-  | { type: "NUDGE_RESULT"; choice: "TRY_MYSELF" | "ASK_AI_ANYWAY"; waitedMs?: number };
+  | {
+      type: "NUDGE_RESULT";
+      choice: "TRY_MYSELF" | "ASK_AI_ANYWAY";
+      waitedMs?: number;
+    };
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg.type !== "PROMPT_SUBMIT") return;
+chrome.runtime.onMessage.addListener(
+  async (msg: BackgroundMsg, sender, sendResponse) => {
+    if (msg.type !== "PROMPT_SUBMIT") return;
 
-  const { prompt } = msg;
+    const { prompt, timestamp } = msg;
 
-  console.log("[WaterYouDoin] Background received prompt:", prompt);
+    console.log("[WaterYouDoin] Background received prompt:", prompt);
 
-  // TEMP: always allow
-  sendResponse({ action: "ALLOW" });
+    /* -----------------------------
+       Build classifier context
+    ------------------------------ */
+    const ctx: ClassifyContext = {
+      modelWeights: MODEL_WEIGHTS,
+      strictness: 1.0,
+      nowTimestamp: timestamp,
+    };
 
-  // Required for async safety in MV3
-  return true;
-});
+    /* -----------------------------
+       Classify
+    ------------------------------ */
+    const result = factualOrNot(prompt, ctx);
 
+    console.log(
+      "[WaterYouDoin] Classification:",
+      result.classification,
+      "confidence:",
+      result.confidence
+    );
+
+    /* -----------------------------
+       Decide action
+    ------------------------------ */
+    switch (result.classification) {
+      case "LOW_VALUE":
+        recordLowValueBlock();
+        sendResponse({ action: "BLOCK_LOW_VALUE" });
+        return true;
+
+      case "FACTUAL":
+        recordFactualRedirect();
+        sendResponse({
+          action: "REDIRECT_FACT",
+          redirectUrl: buildSearchUrl(prompt),
+        });
+        return true;
+
+      case "REASONING":
+        recordReasoningNudge();
+        sendResponse({
+          action: "NUDGE_REASONING",
+          waitMs: 10_000,
+        });
+        return true;
+
+      default:
+        sendResponse({ action: "ALLOW" });
+        return true;
+    }
+  }
+);

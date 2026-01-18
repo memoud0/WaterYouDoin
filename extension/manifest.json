@@ -27,11 +27,13 @@
     }
   ],
 
+  "options_page": "extension/pages/options/options.html",
+
   "action": {
     "default_popup": "extension/pages/popup/popup.html"
   },
 
   "icons": {
-    "16": "/assets/icons/logo.png"
+    "16": "extension/assets/icons/ICECUBE.PNG"
   }
 }
