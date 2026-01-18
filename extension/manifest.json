@@ -35,7 +35,7 @@
   },
 
   "icons": {
-    "16": "extension/assets/icons/ICECUBE.PNG"
+    "16": "extension/assets/icons/logo.png"
   },
 
   "web_accessible_resources": [
