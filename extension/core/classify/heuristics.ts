@@ -22,7 +22,11 @@ const RE_LOOKUP_PHRASE =
   /\b(meaning|definition|timezone|capital|population|height|age|birthday|release date|syntax|version|ports?)\b/i;
 
 const RE_REASONING_STRONG =
-  /\b(implement|design|debug|fix|optimize|refactor|tradeoffs?|architecture|approach|strategy)\b/i;
+  /\b(implement|design|debug|fix|optimize|reduce|refactor|tradeoffs?|architecture|approach|strategy)\b/i;
+
+// Short but meaningful lookups/acronyms that should not be treated as low-value
+const RE_SHORT_MEANINGFUL =
+  /^(jwt( exp| iat| aud| iss)?|cors|grpc|etag|protobuf|gzip|base64|sha[- ]?256|utf[- ]?8|sql join|ts generics|regex lookbehind|tcp handshake|dns ttl|http 418|ssh keys?|docker compose|k8s ingress|sqlite pragma|git rebase|npm audit|python venv|react memo|oauth flow)$/i;
 
 export type ScoreResult = { score: number; signals: string[] };
 
@@ -31,6 +35,7 @@ export function lowValueScore(normalized: string, f: Features): ScoreResult {
   let score = 0;
 
   if (!normalized) return { score: 1, signals: ["empty_prompt"] };
+  if (RE_SHORT_MEANINGFUL.test(normalized)) return { score: 0, signals: ["short_meaningful_whitelist"] };
   if (LOW_VALUE_EXACT.has(normalized)) return { score: 0.99, signals: ["low_value_exact"] };
 
   if (f.lenTokens <= 2) { score += 0.45; signals.push("very_short"); }

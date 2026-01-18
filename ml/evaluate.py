@@ -16,6 +16,7 @@ LABELS = ["FACTUAL", "LOW_VALUE", "REASONING"]
 
 ART_DIR = os.path.join(os.path.dirname(__file__), "artifacts")
 DATA_PATH = os.path.join(os.path.dirname(__file__), "dataset", "prompts.csv")
+GOLDEN_PATH = os.path.join(os.path.dirname(__file__), "dataset", "golden.csv")
 
 
 def load_artifact():
@@ -130,6 +131,23 @@ def main():
             shown += 1
             if shown >= 5:
                 break
+
+    # Evaluate on golden set if present
+    if os.path.exists(GOLDEN_PATH):
+        gdf = pd.read_csv(GOLDEN_PATH)
+        gdf["prompt"] = gdf["prompt"].astype(str)
+        gdf["label"] = gdf["label"].astype(str).str.upper()
+        gdf = gdf[gdf["label"].isin(LABELS)].copy()
+
+        Xg, yg_true, gnorms = featurize_df(gdf, labels)
+        yg_pred = clf.predict(Xg)
+
+        print("\n=== Classification report (GOLDEN SET) ===")
+        print(classification_report(yg_true, yg_pred, target_names=labels, digits=4))
+
+        cmg = confusion_matrix(yg_true, yg_pred, labels=list(range(len(labels))))
+        print("\n=== Confusion matrix (GOLDEN SET) ===")
+        print(pretty_confusion(cmg, labels))
 
 
 if __name__ == "__main__":

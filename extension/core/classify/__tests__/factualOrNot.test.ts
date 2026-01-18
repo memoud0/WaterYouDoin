@@ -3,6 +3,7 @@ import { describe, it, expect } from "vitest";
 import { factualOrNot } from "../factualOrNot";
 import { normalize } from "../../utils/text";
 import { fnv1a32 } from "../../utils/hash";
+import { classifyComposite } from "../segments";
 
 type Class = "FACTUAL" | "LOW_VALUE" | "REASONING";
 
@@ -303,6 +304,22 @@ describe("factualOrNot() classification (big suite, per-prompt)", () => {
       r.classification,
       `Duplicate variant test failed.\nA: "${promptA}"\nB: "${promptB}"\nResult:\n${JSON.stringify(r, null, 2)}`
     ).toBe("LOW_VALUE");
+    expect(r.signals).toContain("duplicate_prompt");
+  });
+
+  it("composite classifier still flags duplicates across multi-sentence prompt", () => {
+    const prompt = "Thanks! Now, compare Redis vs Kafka and explain.";
+    const hash = fnv1a32(normalize(prompt));
+
+    const r = classifyComposite(prompt, {
+      lastHash: hash,
+      lastTimestamp: 1000,
+      nowTimestamp: 2000,
+      duplicateWindowMs: 8000,
+      modelWeights: undefined,
+    });
+
+    expect(r.classification).toBe("LOW_VALUE");
     expect(r.signals).toContain("duplicate_prompt");
   });
 });

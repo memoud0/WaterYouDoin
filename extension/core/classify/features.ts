@@ -18,7 +18,7 @@ export type Features = {
   isStrongLookupStart: boolean;
 };
 
-const RE_WH_START = /^(what|who|when|where|why|how)\b/i;
+const RE_WH_START = /^(what|whats|who|whos|when|whens|where|wheres|why|whys|how|hows)\b/i;
 const RE_DEFINE = /\b(define|definition|meaning|synonym)\b/i;
 const RE_YEAR = /\b(19\d{2}|20\d{2})\b/; // 1900-2099
 

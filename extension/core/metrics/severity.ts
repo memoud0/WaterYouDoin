@@ -1,41 +1,44 @@
 import { StoredStats, MascotState } from "../storage/schema";
 
 const THRESHOLDS = {
-    SOLID: 0, 
-    MELTING: 50,
-    DROPLET: 75,
-}
+  SOLID: 0,
+  MELTING: 50,
+  DROPLET: 75,
+};
 
 export const recalculteSeverity = (stats: StoredStats): StoredStats => {
-    let score = 0;
-    score += (stats.today.askAIAnywayClicks*15);
-    score += (stats.today.lowValueBlocks*2);
-    score -= (stats.today.tryMyselfClicks*10);
-    score += (stats.today.factualRedirects*5);
-    score = Math.max(0, Math.min(100, score));
+  let score = 0;
 
-    let newState: MascotState = "SOLID";
+  // Negative actions
+  score += stats.today.askAIAnywayClicks * 18;
+  score += stats.today.lowValueBlocks * 3;
+  score += stats.today.duplicateBlocked * 2;
 
-    const lastAction = stats.lastPrompts.lastTimestamp || 0;
-    const isRecent = Date.now() - lastAction < (5*60*1000);
+  // Positive actions
+  score -= stats.today.tryMyselfClicks * 12;
+  score -= stats.today.factualRedirects * 6;
 
-    if (isRecent && stats.today.tryMyselfClicks > 0 && score < THRESHOLDS.MELTING) {
-        newState = "THINKING";
-    }
+  // Clamp
+  score = Math.max(0, Math.min(100, score));
 
-    else if (score >= THRESHOLDS.DROPLET) {
-        newState = "DROPLET";
-    }
+  let newState: MascotState = "SOLID";
 
-    else if (score >= THRESHOLDS.MELTING) {
-        newState = "MELTING";
-    }
+  const lastAction = stats.lastPrompts.lastTimestamp || 0;
+  const isRecent = Date.now() - lastAction < 5 * 60 * 1000;
 
-    return {
-        ...stats,
-        severity: {
-            score: score,
-            mascotState: newState,
-        }
-    }
+  if (isRecent && stats.today.tryMyselfClicks > 0 && score < THRESHOLDS.MELTING) {
+    newState = "THINKING";
+  } else if (score >= THRESHOLDS.DROPLET) {
+    newState = "DROPLET";
+  } else if (score >= THRESHOLDS.MELTING) {
+    newState = "MELTING";
+  }
+
+  return {
+    ...stats,
+    severity: {
+      score,
+      mascotState: newState,
+    },
+  };
 };

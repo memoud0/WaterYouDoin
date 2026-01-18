@@ -1,1 +1,31 @@
+# Node
 node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+dist/
+.vite/
+.turbo/
+.parcel-cache/
+.cache/
+
+# Editor/OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Env/config (keep real model/data artifacts)
+.env
+.env.*
+.DS_Store
+
+# Python
+ml/__pycache__
+*.pyc
+.venv/
+ml/__pycache__/featurize.cpython-313.pyc

@@ -8,11 +8,13 @@
     "build": "vite build",
     "test": "vitest",
     "test:watch": "vitest --watch",
-    "classify": "tsx extension/scripts/classify.ts"
+    "classify": "tsx extension/scripts/classify.ts",
+    "eval": "tsx extension/scripts/evalPipeline.ts ml/dataset/prompts.csv"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.260",
     "@types/node": "^25.0.9",
+    "csv-parse": "^5.5.3",
     "tsx": "^4.21.0",
     "typescript": "^5.3.3",
     "vite": "^5.0.0",

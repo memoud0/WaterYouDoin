@@ -2,43 +2,37 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass
 from typing import Dict, List, Tuple
 
 # -------------------------
-# Normalization
+# Normalization (matches extension/core/utils/text.ts)
 # -------------------------
 
-# Remove apostrophes ONLY (join words)
-_RE_APOSTROPHE = re.compile(r"[']+")
-
-# Remove everything except letters/numbers/spaces and '?'
-_RE_KEEP = re.compile(r"[^a-z0-9 ?]+")
-
-# Collapse multiple spaces
+_RE_LEADING = re.compile(r'^[\s"\'`“”‘’.,!?():;\[\]{}]+')
+_RE_TRAILING = re.compile(r'[\s"\'`“”‘’.,!?():;\[\]{}]+$')
 _RE_SPACES = re.compile(r"\s+")
 
 
 def normalize(text: str) -> str:
     """
-    Normalization rules:
-    - lowercase
-    - remove apostrophes without inserting spaces (what's -> whats)
-    - remove other punctuation
-    - keep letters/numbers/spaces and '?'
+    Normalization rules (keep in lockstep with TS):
+    - NFKC unicode normalize
+    - lowercase + trim
+    - remove apostrophes (what's -> whats)
     - collapse whitespace
+    - strip leading/trailing punctuation, keep internal punctuation
     """
-    t = (text or "").lower()
+    if not text:
+        return ""
 
-    # IMPORTANT: remove apostrophes FIRST
-    t = _RE_APOSTROPHE.sub("", t)
-
-    # Remove other punctuation
-    t = _RE_KEEP.sub(" ", t)
-
-    # Normalize whitespace
-    t = _RE_SPACES.sub(" ", t).strip()
-
+    t = unicodedata.normalize("NFKC", text)
+    t = t.lower().strip()
+    t = re.sub(r"['’]+", "", t)
+    t = _RE_SPACES.sub(" ", t)
+    t = _RE_LEADING.sub("", t)
+    t = _RE_TRAILING.sub("", t)
     return t
 
 
@@ -98,10 +92,10 @@ _RE_WH_START = re.compile(r"^(what|whats|who|whos|when|whens|where|wheres|why|wh
 _RE_DEFINE = re.compile(r"\b(define|definition|meaning|synonym)\b", re.I)
 _RE_YEAR = re.compile(r"\b(19\d{2}|20\d{2})\b")
 
-# Note: we removed most punctuation during normalize(), but we still keep
-# code-ish keywords. This is a simple proxy for "code tokens".
+# Matches TS RE_CODE (includes punctuation/code fences)
 _RE_CODE = re.compile(
-    r"\b(const|let|var|function|class|import|export|return|def)\b", re.I
+    r"(```|`|=>|[{}\(\)\[\];]|</?[a-z][\s\S]*?>|\b(const|let|var|function|class|import|export|return|def)\b)",
+    re.I,
 )
 
 _RE_ERROR = re.compile(
@@ -109,7 +103,7 @@ _RE_ERROR = re.compile(
     re.I,
 )
 
-_RE_COMPARE = re.compile(r"\b(compare|vs|versus|difference|tradeoffs|pros and cons)\b", re.I)
+_RE_COMPARE = re.compile(r"\b(compare|vs\.?|versus|difference|tradeoffs?|pros and cons)\b", re.I)
 _RE_BUILD = re.compile(
     r"\b(implement|design|debug|fix|optimize|refactor|build|write|create|generate|architect)\b",
     re.I,

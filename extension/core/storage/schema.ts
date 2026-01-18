@@ -92,7 +92,7 @@ export const DEFAULT_STATS: StoredStats = {
   lastPrompts: {},
 };
 
-const STORAGE_KEY = "stats";
+const STORAGE_KEY = "waterYouDoinStats";
 
 export function todayKey(): string {
   return new Date().toISOString().split("T")[0];

@@ -145,6 +145,33 @@ prompt,label
 "sqlite pragma meaning",FACTUAL
 "sqlite pragma meaning?",FACTUAL
 "what is sqlite pragma?",FACTUAL
+"grpc meaning",FACTUAL
+"grpc meaning?",FACTUAL
+"what is grpc?",FACTUAL
+"what does grpc stand for?",FACTUAL
+"protobuf meaning",FACTUAL
+"protobuf meaning?",FACTUAL
+"what is protobuf?",FACTUAL
+"http3 meaning",FACTUAL
+"what is http3?",FACTUAL
+"websocket meaning",FACTUAL
+"what is websocket?",FACTUAL
+"sse meaning",FACTUAL
+"what is server sent events?",FACTUAL
+"tcp handshake?",FACTUAL
+"dns ttl?",FACTUAL
+"http 418?",FACTUAL
+"etag?",FACTUAL
+"css grid gap?",FACTUAL
+"ts generics?",FACTUAL
+"regex lookbehind?",FACTUAL
+"ssh keys?",FACTUAL
+"docker compose?",FACTUAL
+"k8s ingress?",FACTUAL
+"sqlite pragma?",FACTUAL
+"git rebase?",FACTUAL
+"npm audit?",FACTUAL
+"python venv?",FACTUAL
 
 "hi",LOW_VALUE
 "hello",LOW_VALUE
@@ -397,3 +424,598 @@ noted,LOW_VALUE
 noted thanks,LOW_VALUE
 acknowledged,LOW_VALUE
 acknowledged thanks,LOW_VALUE
+just checking something,LOW_VALUE
+quick test,LOW_VALUE
+placeholder,LOW_VALUE
+ignore this,LOW_VALUE
+just wondering,LOW_VALUE
+thanks for your help,LOW_VALUE
+appreciate the help,LOW_VALUE
+nevermind,LOW_VALUE
+nm,LOW_VALUE
+nope all good,LOW_VALUE
+yep got it,LOW_VALUE
+yea got it,LOW_VALUE
+
+compare monolith vs microservices for a small team,REASONING
+compare redis vs kafka for event streaming,REASONING
+compare grpc vs rest for internal services,REASONING
+compare websockets vs server sent events for realtime updates,REASONING
+compare postgres vs mysql for write heavy workloads,REASONING
+compare mongodb vs postgres for analytics,REASONING
+compare rest vs graphql for mobile clients,REASONING
+compare oauth vs saml and explain tradeoffs,REASONING
+design a feature flag system with gradual rollout,REASONING
+design a multi tenant saas database schema,REASONING
+design a queue worker system for image processing,REASONING
+design a realtime chat architecture with websockets,REASONING
+design a file upload pipeline with virus scanning,REASONING
+design a caching strategy for this api with rate limiting,REASONING
+design an observability stack with logs metrics tracing,REASONING
+design a session management strategy for multiple devices,REASONING
+architect a secure password reset flow,REASONING
+architect a payment flow with retries and idempotency,REASONING
+how would you shard a growing user table,REASONING
+how would you handle retries with exponential backoff,REASONING
+how do i prevent race conditions in async code,REASONING
+how do i make this api idempotent and safe to retry,REASONING
+how do i model permissions roles and policies,REASONING
+how do i choose indexes for this query workload,REASONING
+how do i migrate from javascript to typescript safely,REASONING
+how do i speed up my react build and reduce bundle size,REASONING
+debug why my fetch request is blocked by cors,REASONING
+debug why my database connections are exhausted,REASONING
+debug why my api intermittently returns 502,REASONING
+debug a typeerror cannot read properties of undefined,REASONING
+debug a segmentation fault in c,REASONING
+debug a crashloopbackoff in kubernetes,REASONING
+debug high memory usage in node,REASONING
+optimize this sql query and explain indexing strategy,REASONING
+optimize a graphql resolver that causes n+1 queries,REASONING
+optimize a slow endpoint under high concurrency,REASONING
+refactor this function for readability and performance,REASONING
+refactor code to reduce cyclomatic complexity,REASONING
+implement an lru cache in typescript,REASONING
+implement debounce in javascript with an example,REASONING
+implement rate limiting token bucket in node,REASONING
+implement a simple pubsub system in typescript,REASONING
+implement a retry strategy with jitter and backoff,REASONING
+write unit tests for this function and explain edge cases,REASONING
+write a function to deep merge two objects without mutation,REASONING
+write a parser for arithmetic expressions,REASONING
+explain why eventual consistency might be acceptable here,REASONING
+explain tradeoffs of strong consistency vs availability,REASONING
+explain why my docker image is so large and how to reduce it,REASONING
+explain why my react component rerenders and how to memoize,REASONING
+explain why my useeffect is looping and how to fix it,REASONING
+compare cookies vs localstorage for auth tokens,REASONING
+compare redis vs memcached for caching,REASONING
+compare rabbitmq vs kafka for event streaming,REASONING
+build a react hook for polling with cancellation,REASONING
+build a state machine for a checkout flow with retries,REASONING
+build a retry strategy with jitter and backoff,REASONING
+build a permissions system for an enterprise app,REASONING
+build a rollout strategy with feature flags,REASONING
+plan a migration from monolith to microservices,REASONING
+plan a rollout strategy with canary releases,REASONING
+handle pagination cursor vs offset and explain tradeoffs,REASONING
+handle rate limits per user and per ip,REASONING
+handle csrf in a single page app,REASONING
+handle jwt securely in a browser,REASONING
+choose between sse and websockets for realtime updates,REASONING
+choose between rest and graphql for this use case,REASONING
+what should i check for flaky tests in ci,REASONING
+why do i get referenceerror foo is not defined,REASONING
+why do i get cors error on fetch,REASONING
+why is my api timing out under load,REASONING
+why is my docker image failing to build,REASONING
+why is my postgres query slow,REASONING
+why is my node process memory growing,REASONING
+why is my react hook causing an infinite loop,REASONING
+why does my kubernetes pod keep crashing,REASONING
+why are my websockets disconnecting randomly,REASONING
+what is hsts,FACTUAL
+what is mtls,FACTUAL
+what is cors preflight,FACTUAL
+what is same origin policy,FACTUAL
+meaning of csrf,FACTUAL
+meaning of xss,FACTUAL
+meaning of sql injection,FACTUAL
+meaning of heap overflow,FACTUAL
+meaning of buffer overflow,FACTUAL
+meaning of race condition,FACTUAL
+meaning of deadlock,FACTUAL
+meaning of livelock,FACTUAL
+what is saga pattern,FACTUAL
+what is circuit breaker pattern,FACTUAL
+what is blue green deployment,FACTUAL
+what is canary release,FACTUAL
+what is feature flag,FACTUAL
+what is api gateway,FACTUAL
+what is reverse proxy,FACTUAL
+what is load balancer,FACTUAL
+what is sticky session,FACTUAL
+what is jwt refresh token,FACTUAL
+what is oauth refresh token,FACTUAL
+what is pkce,FACTUAL
+what is oidc,FACTUAL
+what is tls handshake,FACTUAL
+what is certificate pinning,FACTUAL
+what is csrf token,FACTUAL
+what is content security policy,FACTUAL
+what is dns over https,FACTUAL
+what is http3,FACTUAL
+what is webauthn,FACTUAL
+what is passkey,FACTUAL
+what is spa,FACTUAL
+what is pwa,FACTUAL
+what is service worker,FACTUAL
+what is wasm,FACTUAL
+what is webgl,FACTUAL
+what is brotli,FACTUAL
+what is gzip compression,FACTUAL
+design rate limiter using redis,REASONING
+design api gateway with authorization,REASONING
+design audit logging pipeline,REASONING
+design multi region failover,REASONING
+design websockets at scale,REASONING
+design realtime notifications,REASONING
+design idempotent payment api,REASONING
+design saga for order workflow,REASONING
+design circuit breaker middleware,REASONING
+design blue green deployment plan,REASONING
+compare pkce vs client secret,REASONING
+compare jwt vs opaque tokens,REASONING
+compare grpc vs rest for mobile,REASONING
+compare kafka vs rabbitmq for retries,REASONING
+compare aurora vs rds postgres,REASONING
+compare redis cluster vs sentinel,REASONING
+debug 429 errors from api gateway,REASONING
+debug cors preflight failures,REASONING
+debug tls handshake failure,REASONING
+debug high p99 latency,REASONING
+debug memory leak in node server,REASONING
+debug thread exhaustion in java,REASONING
+debug deadlocks in postgres,REASONING
+debug cpu spikes in kubernetes pod,REASONING
+optimize postgres index strategy,REASONING
+optimize redis cache hit rate,REASONING
+optimize graphql resolver batching,REASONING
+optimize react render performance,REASONING
+plan data migration with zero downtime,REASONING
+plan feature flag rollout with kill switch,REASONING
+plan schema migration with backfill,REASONING
+plan canary release with automated rollback,REASONING
+handle partial failures in distributed system,REASONING
+handle poison messages in queue,REASONING
+handle duplicate events in event bus,REASONING
+handle clock skew between services,REASONING
+handle jwt expiration and refresh,REASONING
+handle flaky tests in ci for async code,REASONING
+implement exponential backoff with jitter and deadlines,REASONING
+implement distributed lock with redis,REASONING
+ok cool thanks bye,LOW_VALUE
+lol okay gotcha,LOW_VALUE
+meh idk,LOW_VALUE
+just curious,LOW_VALUE
+neat,LOW_VALUE
+brb,LOW_VALUE
+ttyl,LOW_VALUE
+roger that thanks,LOW_VALUE
+appreciate it bye,LOW_VALUE
+nice work thanks,LOW_VALUE
+sweet,LOW_VALUE
+haha sure,LOW_VALUE
+yup makes sense,LOW_VALUE
+hmm ok,LOW_VALUE
+okie,LOW_VALUE
+hey??,LOW_VALUE
+yo!!!,LOW_VALUE
+thanks!!!,LOW_VALUE
+ok sure thanks,LOW_VALUE
+alright thanks,LOW_VALUE
+meaning of csrf token,FACTUAL
+meaning of jwt,FACTUAL
+meaning of oauth2,FACTUAL
+meaning of oidc,FACTUAL
+meaning of spa,FACTUAL
+meaning of pwa,FACTUAL
+meaning of svc,FACTUAL
+meaning of sla,FACTUAL
+meaning of slo,FACTUAL
+meaning of slis,FACTUAL
+what is rto,FACTUAL
+what is rpo,FACTUAL
+what is mttr,FACTUAL
+what is mtbf,FACTUAL
+what is mttr vs mtbf,FACTUAL
+what is sql injection,FACTUAL
+what is xss,FACTUAL
+what is csrf,FACTUAL
+what is ssti,FACTUAL
+what is ssrf,FACTUAL
+what is path traversal,FACTUAL
+what is open redirect,FACTUAL
+what is clickjacking,FACTUAL
+what is content sniffing,FACTUAL
+what is csp,FACTUAL
+what is samesite cookie,FACTUAL
+what is http only cookie,FACTUAL
+what is secure cookie,FACTUAL
+what is hpkp,FACTUAL
+what is hsts preload,FACTUAL
+what is ocsp stapling,FACTUAL
+what is forward secrecy,FACTUAL
+what is key rotation,FACTUAL
+what is kdf,FACTUAL
+what is argon2,FACTUAL
+what is bcrypt,FACTUAL
+what is scrypt,FACTUAL
+what is password pepper,FACTUAL
+what is salt in hashing,FACTUAL
+what is nonce,FACTUAL
+what is csrf double submit cookie,FACTUAL
+what is csrf same site lax,FACTUAL
+what is mfa,FACTUAL
+what is totp,FACTUAL
+what is hotp,FACTUAL
+what is yubikey,FACTUAL
+what is passphrase,FACTUAL
+what is tls version,FACTUAL
+what is cipher suite,FACTUAL
+what is tls renegotiation,FACTUAL
+what is tls session resumption,FACTUAL
+what is alpn,FACTUAL
+what is h2,FACTUAL
+what is h3,FACTUAL
+what is sni,FACTUAL
+design auth for multi-tenant saas,REASONING
+design permissions model with roles and policies,REASONING
+design key rotation strategy for services,REASONING
+design api rate limiting with quotas per tenant,REASONING
+design secure cookie strategy for spa,REASONING
+design secrets management with vault,REASONING
+design oauth + oidc login flow with pkce,REASONING
+design refresh token rotation and revocation,REASONING
+design zero downtime deploys with db migrations,REASONING
+design chaos testing plan for microservices,REASONING
+design resiliency for third-party api failures,REASONING
+design caching for feature flags service,REASONING
+design idempotent webhook handler,REASONING
+design sse vs websockets decision for notifications,REASONING
+design api gateway authz with jwt validation,REASONING
+design audit logging for compliance,REASONING
+design pii handling with data minimization,REASONING
+design data retention and deletion policy,REASONING
+design backup and restore plan with rpo rto,REASONING
+design access logging and anomaly detection,REASONING
+design role provisioning workflow,REASONING
+design onboarding flow with just-in-time access,REASONING
+design incident response playbook,REASONING
+design deploy pipeline with manual approval gates,REASONING
+design privileged access management flow,REASONING
+compare totp vs hotp for mfa,REASONING
+compare bcrypt vs argon2,REASONING
+compare jwt vs sessions for spa,REASONING
+compare spa vs mpa for this product,REASONING
+compare pwa vs native app tradeoffs,REASONING
+compare pkce vs implicit flow,REASONING
+compare oauth client types public vs confidential,REASONING
+compare oidc code flow vs hybrid,REASONING
+compare vault vs aws secrets manager,REASONING
+compare redis vs dynamodb for session storage,REASONING
+compare alpn http2 vs http3,REASONING
+compare blue green vs canary deployments,REASONING
+compare chaos testing vs load testing,REASONING
+debug csrf token invalid errors,REASONING
+debug oauth invalid state error,REASONING
+debug oidc nonce mismatch,REASONING
+debug pkce code verifier mismatch,REASONING
+debug tls cert verify failed,REASONING
+debug jwt expired or invalid signature,REASONING
+debug cookie not set in cross-site request,REASONING
+debug same-site cookie blocked,REASONING
+debug csp blocking script,REASONING
+debug mixed content warnings,REASONING
+debug hsts preload issues,REASONING
+debug sni mismatch,REASONING
+debug high 401 rate after deploy,REASONING
+debug mass logout after cookie change,REASONING
+debug session fixation risk,REASONING
+debug xss report in bug bounty,REASONING
+debug ssrf attempt in logs,REASONING
+debug path traversal attempt in logs,REASONING
+debug slow tls handshake,REASONING
+debug random 499 client closed request,REASONING
+debug rate limit spikes at edge,REASONING
+ok cool bye,LOW_VALUE
+ok thx bye,LOW_VALUE
+ok ttyl,LOW_VALUE
+thx ttyl,LOW_VALUE
+thanks bye,LOW_VALUE
+thanks ttyl,LOW_VALUE
+okay thanks bye,LOW_VALUE
+okay bye,LOW_VALUE
+alright bye,LOW_VALUE
+bye,LOW_VALUE
+goodbye,LOW_VALUE
+peace,LOW_VALUE
+later,LOW_VALUE
+ciao,LOW_VALUE
+ttfn,LOW_VALUE
+ok later,LOW_VALUE
+maybe later,LOW_VALUE
+idk,LOW_VALUE
+idc,LOW_VALUE
+nah,LOW_VALUE
+nope,LOW_VALUE
+whatever man,LOW_VALUE
+whatever dude,LOW_VALUE
+cool story,LOW_VALUE
+lol nope,LOW_VALUE
+lmao ok,LOW_VALUE
+omg ok,LOW_VALUE
+omg lol,LOW_VALUE
+kk bye,LOW_VALUE
+kk thanks bye,LOW_VALUE
+gotcha bye,LOW_VALUE
+roger bye,LOW_VALUE
+meaning of latency,FACTUAL
+meaning of throughput,FACTUAL
+meaning of tail latency,FACTUAL
+meaning of p99 latency,FACTUAL
+meaning of queue depth,FACTUAL
+meaning of cold start,FACTUAL
+meaning of cache hit ratio,FACTUAL
+meaning of cache invalidation,FACTUAL
+meaning of eventual consistency,FACTUAL
+meaning of strong consistency,FACTUAL
+meaning of availability,FACTUAL
+meaning of durability,FACTUAL
+meaning of scalability,FACTUAL
+meaning of elasticity,FACTUAL
+meaning of horizontal scaling,FACTUAL
+meaning of vertical scaling,FACTUAL
+meaning of autoscaling,FACTUAL
+meaning of circuit breaker,FACTUAL
+meaning of bulkhead pattern,FACTUAL
+meaning of sagas,FACTUAL
+meaning of idempotency key,FACTUAL
+meaning of compensating transaction,FACTUAL
+meaning of message deduplication,FACTUAL
+meaning of poison pill,FACTUAL
+meaning of dead letter queue,FACTUAL
+meaning of backpressure,FACTUAL
+meaning of jitter,FACTUAL
+meaning of priority queue,FACTUAL
+meaning of bloom filter,FACTUAL
+meaning of hyperloglog,FACTUAL
+meaning of consistent hashing,FACTUAL
+meaning of sharding,FACTUAL
+meaning of partition key,FACTUAL
+meaning of leader election,FACTUAL
+meaning of quorum,FACTUAL
+meaning of paxos,FACTUAL
+meaning of raft,FACTUAL
+meaning of gossip protocol,FACTUAL
+meaning of cap theorem,FACTUAL
+meaning of pacelc,FACTUAL
+meaning of lamport clock,FACTUAL
+meaning of vector clock,FACTUAL
+meaning of watermark in streams,FACTUAL
+meaning of exactly once,FACTUAL
+meaning of at least once,FACTUAL
+meaning of at most once,FACTUAL
+meaning of snapshot isolation,FACTUAL
+meaning of phantom read,FACTUAL
+meaning of repeatable read,FACTUAL
+meaning of serializable isolation,FACTUAL
+meaning of mvcc,FACTUAL
+meaning of write ahead log,FACTUAL
+meaning of logical replication,FACTUAL
+meaning of binlog,FACTUAL
+meaning of redo log,FACTUAL
+meaning of undo log,FACTUAL
+meaning of buffer cache,FACTUAL
+meaning of page cache,FACTUAL
+meaning of tps,FACTUAL
+meaning of qps,FACTUAL
+meaning of rps,FACTUAL
+meaning of opa,FACTUAL
+meaning of rbac,FACTUAL
+meaning of abac,FACTUAL
+meaning of pbac,FACTUAL
+meaning of saml,FACTUAL
+meaning of scim,FACTUAL
+meaning of spnego,FACTUAL
+meaning of kerberos,FACTUAL
+meaning of ntlm,FACTUAL
+meaning of ldap,FACTUAL
+meaning of ldaps,FACTUAL
+meaning of starttls,FACTUAL
+meaning of dnssec,FACTUAL
+meaning of dhcp,FACTUAL
+meaning of nat,FACTUAL
+meaning of firewall,FACTUAL
+meaning of waf,FACTUAL
+meaning of siem,FACTUAL
+meaning of soar,FACTUAL
+meaning of edr,FACTUAL
+meaning of mdr,FACTUAL
+meaning of xdr,FACTUAL
+meaning of dlp,FACTUAL
+meaning of casb,FACTUAL
+meaning of iam,FACTUAL
+meaning of pam,FACTUAL
+meaning of mfa fatigue,FACTUAL
+meaning of phishing resistant mfa,FACTUAL
+meaning of webauthn passkey,FACTUAL
+meaning of hardware security key,FACTUAL
+meaning of session fixation,FACTUAL
+meaning of replay attack,FACTUAL
+meaning of man in the middle,FACTUAL
+meaning of downgrade attack,FACTUAL
+meaning of csrf origin check,FACTUAL
+meaning of referer check,FACTUAL
+meaning of strict transport security,FACTUAL
+meaning of cross origin isolated,FACTUAL
+meaning of shared array buffer requirement,FACTUAL
+meaning of trusted types,FACTUAL
+meaning of sandbox iframe,FACTUAL
+meaning of coop,FACTUAL
+meaning of coep,FACTUAL
+meaning of corp,FACTUAL
+meaning of csp script src,FACTUAL
+meaning of subresource integrity,FACTUAL
+compare paxos vs raft,REASONING
+compare cap vs pacelc tradeoffs,REASONING
+compare mvcc vs locks,REASONING
+compare rbac vs abac vs pbac,REASONING
+compare jwt vs session for bff pattern,REASONING
+compare opa vs casbin,REASONING
+compare opa vs custom middleware,REASONING
+compare redis streams vs kafka,REASONING
+compare sns sqs vs kafka,REASONING
+compare pubsub vs event bus,REASONING
+compare spa bff vs backend for frontend,REASONING
+compare grpc streaming vs websockets,REASONING
+compare api gateway vs service mesh,REASONING
+compare consul vs istio,REASONING
+compare linkerd vs istio,REASONING
+compare nginx vs envoy,REASONING
+compare waf vs reverse proxy,REASONING
+compare waf vs api gateway,REASONING
+compare redis cluster vs elasticache,REASONING
+compare aurora global vs multi az,REASONING
+compare dynamodb vs firestore,REASONING
+compare bigtable vs dynamodb,REASONING
+compare document db vs mongodb atlas,REASONING
+compare vpc peering vs transit gateway,REASONING
+compare vpn vs direct connect,REASONING
+compare alb vs nlb,REASONING
+compare sns fifo vs standard,REASONING
+compare sqs fifo vs standard,REASONING
+compare s3 standard vs ia vs glacier,REASONING
+compare lambda vs fargate,REASONING
+compare step functions vs temporal,REASONING
+design leader election with raft,REASONING
+design distributed lock service,REASONING
+design config rollout with feature flags,REASONING
+design geo dns failover,REASONING
+design circuit breaker with fallback,REASONING
+design saga orchestrator service,REASONING
+design idempotent event handler,REASONING
+design dead letter queue handling,REASONING
+design poison message quarantine,REASONING
+design quorum reads and writes,REASONING
+design read replicas for analytics,REASONING
+design log aggregation with json schemas,REASONING
+design pii tokenization service,REASONING
+design data masking strategy,REASONING
+design secrets rotation workflow,REASONING
+design multi az deployment with failover,REASONING
+design disaster recovery for postgres,REASONING
+design rto rpo monitoring,REASONING
+design rollback plan for schema changes,REASONING
+design incident alert routing,REASONING
+design sso for multiple b2b tenants,REASONING
+design mfa enrollment and recovery,REASONING
+design phishing resistant mfa rollout,REASONING
+design passkey onboarding,REASONING
+design session revocation at scale,REASONING
+design consent management for gdpr,REASONING
+debug raft leader flapping,REASONING
+debug replication lag spikes,REASONING
+debug slow quorum writes,REASONING
+debug high tail latency in api,REASONING
+debug cache stampede,REASONING
+debug thundering herd on cold start,REASONING
+debug event replay duplicates,REASONING
+debug websocket disconnect storms,REASONING
+debug kafka consumer lag,REASONING
+debug sns sqs message loss,REASONING
+debug lambda cold start latency,REASONING
+debug step function timeout,REASONING
+debug api gateway 429s,REASONING
+debug envoy 503 response,REASONING
+debug nginx upstream timeout,REASONING
+debug grpc deadline exceeded,REASONING
+debug jwt audience mismatch,REASONING
+debug jwt clock skew failures,REASONING
+debug csrf origin mismatch,REASONING
+debug hsts preload issues,REASONING
+debug s3 signed url expired,REASONING
+debug iam assume role failure,REASONING
+debug permission denied on kms decrypt,REASONING
+ok bye lol,LOW_VALUE
+bye lol,LOW_VALUE
+bye thanks,LOW_VALUE
+bye thx,LOW_VALUE
+alright cool,LOW_VALUE
+alrighty,LOW_VALUE
+okey dokey,LOW_VALUE
+okeydokey,LOW_VALUE
+kk cool,LOW_VALUE
+kk thx,LOW_VALUE
+kk later,LOW_VALUE
+alright man,LOW_VALUE
+alright dude,LOW_VALUE
+whatever lol,LOW_VALUE
+nah lol,LOW_VALUE
+nope lol,LOW_VALUE
+meh ok,LOW_VALUE
+meh sure,LOW_VALUE
+ok ig,LOW_VALUE
+fine whatever,LOW_VALUE
+lol sure,LOW_VALUE
+haha ok,LOW_VALUE
+heh ok,LOW_VALUE
+heh,LOW_VALUE
+shrug,LOW_VALUE
+¯\\_(ツ)_/¯,LOW_VALUE
+i guess,LOW_VALUE
+guess so,LOW_VALUE
+yeah sure,LOW_VALUE
+yeah alright,LOW_VALUE
+sure thing,LOW_VALUE
+sure thanks,LOW_VALUE
+cool thanks bye,LOW_VALUE
+cool bye,LOW_VALUE
+cool later,LOW_VALUE
+ok cool see ya,LOW_VALUE
+ok see you,LOW_VALUE
+see ya,LOW_VALUE
+see you later,LOW_VALUE
+later dude,LOW_VALUE
+later man,LOW_VALUE
+laters,LOW_VALUE
+peace out,LOW_VALUE
+peace bro,LOW_VALUE
+cool story bro,LOW_VALUE
+idk lol,LOW_VALUE
+idc lol,LOW_VALUE
+meh lol,LOW_VALUE
+lol fine,LOW_VALUE
+lol whatever,LOW_VALUE
+thanks anyway,LOW_VALUE
+appreciate it anyway,LOW_VALUE
+no worries,LOW_VALUE
+no worries thanks,LOW_VALUE
+no problem,LOW_VALUE
+np,LOW_VALUE
+nvm thanks,LOW_VALUE
+nvm bye,LOW_VALUE
+ignoring this,LOW_VALUE
+ignore it,LOW_VALUE
+ignore pls,LOW_VALUE
+pass,LOW_VALUE
+hard pass,LOW_VALUE
+soft pass,LOW_VALUE
+skip,LOW_VALUE
+skip it,LOW_VALUE
+meh skip,LOW_VALUE
+okay skipping,LOW_VALUE
+maybe later thanks,LOW_VALUE
+maybe,LOW_VALUE
+perhaps later,LOW_VALUE
+later maybe,LOW_VALUE

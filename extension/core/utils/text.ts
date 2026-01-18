@@ -13,6 +13,9 @@ export function normalize(raw: string): string {
   // Lowercase + trim
   s = s.toLowerCase().trim();
 
+  // Remove apostrophes to normalize contractions (what's -> whats)
+  s = s.replace(/['’]+/g, "");
+
   // Collapse whitespace
   s = s.replace(/\s+/g, " ");
 

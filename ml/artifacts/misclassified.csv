@@ -1,16 +1,23 @@
 prompt,normalized,true,pred,confidence
-define polymorphism,define polymorphism,FACTUAL,LOW_VALUE,0.5393275560407749
-define recursion,define recursion,FACTUAL,LOW_VALUE,0.5393275560407749
-define memoization,define memoization,FACTUAL,LOW_VALUE,0.5393275560407749
-define encapsulation,define encapsulation,FACTUAL,LOW_VALUE,0.5393275560407749
-jwt exp claim,jwt exp claim,FACTUAL,LOW_VALUE,0.7927646405195113
-jwt exp claim?,jwt exp claim?,FACTUAL,LOW_VALUE,0.7927646405195113
-jwt iat claim,jwt iat claim,FACTUAL,LOW_VALUE,0.7927646405195113
-jwt aud claim,jwt aud claim,FACTUAL,LOW_VALUE,0.7927646405195113
-jwt iss claim,jwt iss claim,FACTUAL,LOW_VALUE,0.7927646405195113
-whats up,whats up,LOW_VALUE,FACTUAL,0.8177828182173768
-ok i got it,ok i got it,LOW_VALUE,FACTUAL,0.4892446237934834
-got it thank you,got it thank you,LOW_VALUE,FACTUAL,0.4892446237934834
-i get it now,i get it now,LOW_VALUE,FACTUAL,0.4892446237934834
-appreciate it got it,appreciate it got it,LOW_VALUE,FACTUAL,0.4892446237934834
-good to know thanks,good to know thanks,LOW_VALUE,FACTUAL,0.4892446237934834
+jwt exp claim,jwt exp claim,FACTUAL,LOW_VALUE,0.836005088895862
+jwt exp claim?,jwt exp claim,FACTUAL,LOW_VALUE,0.836005088895862
+jwt iat claim,jwt iat claim,FACTUAL,LOW_VALUE,0.836005088895862
+jwt aud claim,jwt aud claim,FACTUAL,LOW_VALUE,0.836005088895862
+jwt iss claim,jwt iss claim,FACTUAL,LOW_VALUE,0.836005088895862
+tcp handshake?,tcp handshake,FACTUAL,LOW_VALUE,0.9480937080445987
+dns ttl?,dns ttl,FACTUAL,LOW_VALUE,0.9480937080445987
+http 418?,http 418,FACTUAL,LOW_VALUE,0.9480937080445987
+etag?,etag,FACTUAL,LOW_VALUE,0.9831870552154305
+css grid gap?,css grid gap,FACTUAL,LOW_VALUE,0.836005088895862
+ts generics?,ts generics,FACTUAL,LOW_VALUE,0.9480937080445987
+regex lookbehind?,regex lookbehind,FACTUAL,LOW_VALUE,0.9480937080445987
+ssh keys?,ssh keys,FACTUAL,LOW_VALUE,0.9480937080445987
+docker compose?,docker compose,FACTUAL,LOW_VALUE,0.9480937080445987
+k8s ingress?,k8s ingress,FACTUAL,LOW_VALUE,0.9480937080445987
+sqlite pragma?,sqlite pragma,FACTUAL,LOW_VALUE,0.9480937080445987
+git rebase?,git rebase,FACTUAL,LOW_VALUE,0.9480937080445987
+npm audit?,npm audit,FACTUAL,LOW_VALUE,0.9480937080445987
+python venv?,python venv,FACTUAL,LOW_VALUE,0.9480937080445987
+whats up,whats up,LOW_VALUE,FACTUAL,0.8886487095919579
+why is my postgres query slow,why is my postgres query slow,REASONING,FACTUAL,0.7299065032868255
+why are my websockets disconnecting randomly,why are my websockets disconnecting randomly,REASONING,FACTUAL,0.7299065032868255
