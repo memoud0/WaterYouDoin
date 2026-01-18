@@ -201,18 +201,18 @@ function createNudgeUI() {
 
   const mascot = document.createElement("img");
   mascot.className = "mascot";
-  mascot.src = chrome.runtime.getURL("extension/assets/mascot/ICECUBE.PNG");
+  mascot.src = chrome.runtime.getURL("extension/assets/mascot/cube-thinking.png");
 
   const body = document.createElement("div");
   body.className = "body";
 
   const title = document.createElement("div");
   title.className = "title";
-  title.textContent = "Quick factual results";
+  title.textContent = "Top 5 Dogpile results";
 
   const subtitle = document.createElement("div");
   subtitle.className = "subtitle";
-  subtitle.textContent = "You don’t need AI for this. Pick a result or continue anyway.";
+  subtitle.textContent = "Here are the top 5 Dogpile results with the site name and full URL.";
 
   const resultsList = document.createElement("div");
   resultsList.className = "results";
@@ -278,7 +278,7 @@ function createNudgeUI() {
     if (!results.length) {
       const empty = document.createElement("div");
       empty.className = "empty";
-      empty.textContent = "Couldn’t fetch quick results right now. You can still open the search results or ask ChatGPT.";
+      empty.textContent = "Couldn’t fetch the top 5 Dogpile results right now. You can still open the full search or ask ChatGPT.";
       resultsList.appendChild(empty);
       return;
     }
@@ -337,8 +337,9 @@ function createNudgeUI() {
     nudgeStart = Date.now();
 
     mascot.src = chrome.runtime.getURL("extension/assets/mascot/ICECUBE.PNG");
+    mascot.src = chrome.runtime.getURL("extension/assets/mascot/cube-thinking.png");
     title.textContent = "This looks factual";
-    subtitle.textContent = "Stay on ChatGPT. Here are quick non-AI results you can open in a new tab.";
+    subtitle.textContent = "Here are the top 5 Dogpile results with the site name and full URL.";
     renderResults(results, promptForMetrics);
     
     resultsList.style.display = "block";
@@ -363,6 +364,7 @@ function createNudgeUI() {
     nudgeStart = Date.now();
 
     mascot.src = chrome.runtime.getURL("extension/assets/mascot/ICECUBE.PNG");
+    mascot.src = chrome.runtime.getURL("extension/assets/mascot/cube-thinking.png");
     title.textContent = titleText;
     subtitle.textContent = subtitleText;
     

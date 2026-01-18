@@ -13,7 +13,8 @@ export default defineConfig({
         background: resolve(__dirname, "extension/scripts/background.ts"),
         content: resolve(__dirname, "extension/scripts/content.ts"),
         popup: resolve(__dirname, "extension/pages/popup/popup.html"),
-        options: resolve(__dirname, "extension/pages/options/options.html")
+        options: resolve(__dirname, "extension/pages/options/options.html"),
+        offscreen: resolve(__dirname, "extension/pages/offscreen/offscreen.html")
       },
       output: {
         entryFileNames: "[name].js",
