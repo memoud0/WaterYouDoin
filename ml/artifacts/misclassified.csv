@@ -1,0 +1,16 @@
+prompt,normalized,true,pred,confidence
+define polymorphism,define polymorphism,FACTUAL,LOW_VALUE,0.5393275560407749
+define recursion,define recursion,FACTUAL,LOW_VALUE,0.5393275560407749
+define memoization,define memoization,FACTUAL,LOW_VALUE,0.5393275560407749
+define encapsulation,define encapsulation,FACTUAL,LOW_VALUE,0.5393275560407749
+jwt exp claim,jwt exp claim,FACTUAL,LOW_VALUE,0.7927646405195113
+jwt exp claim?,jwt exp claim?,FACTUAL,LOW_VALUE,0.7927646405195113
+jwt iat claim,jwt iat claim,FACTUAL,LOW_VALUE,0.7927646405195113
+jwt aud claim,jwt aud claim,FACTUAL,LOW_VALUE,0.7927646405195113
+jwt iss claim,jwt iss claim,FACTUAL,LOW_VALUE,0.7927646405195113
+whats up,whats up,LOW_VALUE,FACTUAL,0.8177828182173768
+ok i got it,ok i got it,LOW_VALUE,FACTUAL,0.4892446237934834
+got it thank you,got it thank you,LOW_VALUE,FACTUAL,0.4892446237934834
+i get it now,i get it now,LOW_VALUE,FACTUAL,0.4892446237934834
+appreciate it got it,appreciate it got it,LOW_VALUE,FACTUAL,0.4892446237934834
+good to know thanks,good to know thanks,LOW_VALUE,FACTUAL,0.4892446237934834

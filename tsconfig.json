@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "noEmit": true,
+    "resolveJsonModule": true,
     "types": ["chrome", "node"]
   },
   "include": ["extension/**/*.ts", "extension/**/*.tsx", "vite.config.ts"],

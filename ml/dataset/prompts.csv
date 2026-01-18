@@ -1,0 +1,399 @@
+prompt,label
+"What is TCP?",FACTUAL
+"capital of japan",FACTUAL
+"Meaning of polymorphism",FACTUAL
+"When was React released?",FACTUAL
+"Timezone of Montreal",FACTUAL
+
+"hi",LOW_VALUE
+"thanks",LOW_VALUE
+"ok",LOW_VALUE
+"lol",LOW_VALUE
+"👍",LOW_VALUE
+
+"Compare Redux vs Zustand for a large React app",REASONING
+"Help me debug why my component rerenders infinitely",REASONING
+"Design a caching strategy for this API",REASONING
+"Implement a binary search tree in TypeScript",REASONING
+"Optimize this SQL query and explain indexing",REASONING
+"what is tcp?",FACTUAL
+"what is udp?",FACTUAL
+"what is dns?",FACTUAL
+"what is http?",FACTUAL
+"what is https?",FACTUAL
+"what is tls?",FACTUAL
+"what is ssh?",FACTUAL
+"what is oauth?",FACTUAL
+"what is cors?",FACTUAL
+"what is jwt?",FACTUAL
+"whats tcp?",FACTUAL
+"whats udp?",FACTUAL
+"whats dns?",FACTUAL
+"whats http?",FACTUAL
+"whats https?",FACTUAL
+"whats tls?",FACTUAL
+"whats ssh?",FACTUAL
+"whats oauth?",FACTUAL
+"whats cors?",FACTUAL
+"whats jwt?",FACTUAL
+"what does http 404 mean?",FACTUAL
+"what does http 500 mean?",FACTUAL
+"what does dns stand for?",FACTUAL
+"what does jwt stand for?",FACTUAL
+"what does sql stand for?",FACTUAL
+"what does cpu stand for?",FACTUAL
+"what does ram stand for?",FACTUAL
+"what does gpu stand for?",FACTUAL
+"what does ascii stand for?",FACTUAL
+"what does utf 8 mean?",FACTUAL
+"meaning of idempotent",FACTUAL
+"meaning of polymorphism",FACTUAL
+"meaning of encapsulation",FACTUAL
+"meaning of recursion",FACTUAL
+"meaning of memoization",FACTUAL
+"definition of rest",FACTUAL
+"definition of graphql",FACTUAL
+"definition of dependency injection",FACTUAL
+"definition of cache invalidation",FACTUAL
+"definition of cap theorem",FACTUAL
+"define polymorphism",FACTUAL
+"define recursion",FACTUAL
+"define memoization",FACTUAL
+"define dependency injection",FACTUAL
+"define encapsulation",FACTUAL
+"syntax for javascript arrow function",FACTUAL
+"syntax for python list comprehension",FACTUAL
+"syntax for sql inner join",FACTUAL
+"syntax for css grid gap",FACTUAL
+"syntax for typescript generics",FACTUAL
+"javascript arrow function syntax",FACTUAL
+"python list comprehension syntax",FACTUAL
+"css grid gap syntax",FACTUAL
+"sql join syntax",FACTUAL
+"typescript generics syntax",FACTUAL
+"what is the capital of japan?",FACTUAL
+"what is the capital of canada?",FACTUAL
+"what is the capital of france?",FACTUAL
+"what is the capital of germany?",FACTUAL
+"what is the capital of brazil?",FACTUAL
+"capital of japan",FACTUAL
+"capital of canada",FACTUAL
+"capital of france",FACTUAL
+"capital of germany",FACTUAL
+"capital of brazil",FACTUAL
+"population of canada",FACTUAL
+"population of japan",FACTUAL
+"population of france",FACTUAL
+"population of germany",FACTUAL
+"population of brazil",FACTUAL
+"timezone of montreal",FACTUAL
+"timezone of tokyo",FACTUAL
+"timezone of london",FACTUAL
+"timezone of paris",FACTUAL
+"timezone of sydney",FACTUAL
+"what is port 80 used for?",FACTUAL
+"what is port 443 used for?",FACTUAL
+"what is port 22 used for?",FACTUAL
+"what is port 53 used for?",FACTUAL
+"what is port 25 used for?",FACTUAL
+"how many bits in a byte?",FACTUAL
+"how many bytes in a kilobyte?",FACTUAL
+"how many seconds in a day?",FACTUAL
+"how many minutes in an hour?",FACTUAL
+"how many milliseconds in a second?",FACTUAL
+"jwt exp claim",FACTUAL
+"jwt exp claim?",FACTUAL
+"jwt iat claim",FACTUAL
+"jwt aud claim",FACTUAL
+"jwt iss claim",FACTUAL
+"etag meaning",FACTUAL
+"etag meaning?",FACTUAL
+"what is an etag?",FACTUAL
+"gzip meaning",FACTUAL
+"gzip meaning?",FACTUAL
+"what is gzip?",FACTUAL
+"base64 meaning",FACTUAL
+"base64 meaning?",FACTUAL
+"what is base64?",FACTUAL
+"sha 256 meaning",FACTUAL
+"sha 256 meaning?",FACTUAL
+"what is sha 256?",FACTUAL
+"grpc meaning",FACTUAL
+"grpc meaning?",FACTUAL
+"what is grpc?",FACTUAL
+"docker compose meaning",FACTUAL
+"docker compose meaning?",FACTUAL
+"what is docker compose?",FACTUAL
+"git rebase meaning",FACTUAL
+"git rebase meaning?",FACTUAL
+"what is git rebase?",FACTUAL
+"sql left join meaning",FACTUAL
+"sql left join meaning?",FACTUAL
+"what is a left join?",FACTUAL
+"react memo meaning",FACTUAL
+"react memo meaning?",FACTUAL
+"what is react memo?",FACTUAL
+"python venv meaning",FACTUAL
+"python venv meaning?",FACTUAL
+"what is python venv?",FACTUAL
+"npm audit meaning",FACTUAL
+"npm audit meaning?",FACTUAL
+"what is npm audit?",FACTUAL
+"k8s ingress meaning",FACTUAL
+"k8s ingress meaning?",FACTUAL
+"what is kubernetes ingress?",FACTUAL
+"sqlite pragma meaning",FACTUAL
+"sqlite pragma meaning?",FACTUAL
+"what is sqlite pragma?",FACTUAL
+
+"hi",LOW_VALUE
+"hello",LOW_VALUE
+"hey",LOW_VALUE
+"yo",LOW_VALUE
+"sup",LOW_VALUE
+"hiya",LOW_VALUE
+"howdy",LOW_VALUE
+"good morning",LOW_VALUE
+"good night",LOW_VALUE
+"whats up",LOW_VALUE
+"thanks",LOW_VALUE
+"thank you",LOW_VALUE
+"thx",LOW_VALUE
+"ty",LOW_VALUE
+"tysm",LOW_VALUE
+"appreciate it",LOW_VALUE
+"much appreciated",LOW_VALUE
+"cheers",LOW_VALUE
+"awesome thanks",LOW_VALUE
+"ok thanks",LOW_VALUE
+"ok",LOW_VALUE
+"okay",LOW_VALUE
+"k",LOW_VALUE
+"kk",LOW_VALUE
+"kkk",LOW_VALUE
+"okkk",LOW_VALUE
+"okayy",LOW_VALUE
+"ok cool",LOW_VALUE
+"cool",LOW_VALUE
+"nice",LOW_VALUE
+"neat",LOW_VALUE
+"great",LOW_VALUE
+"amazing",LOW_VALUE
+"perfect",LOW_VALUE
+"love it",LOW_VALUE
+"lit",LOW_VALUE
+"fire",LOW_VALUE
+"bet",LOW_VALUE
+"aight",LOW_VALUE
+"alright",LOW_VALUE
+"sure",LOW_VALUE
+"yup",LOW_VALUE
+"yep",LOW_VALUE
+"nope",LOW_VALUE
+"nah",LOW_VALUE
+"lol",LOW_VALUE
+"lmao",LOW_VALUE
+"rofl",LOW_VALUE
+"hahaha",LOW_VALUE
+"haha",LOW_VALUE
+"hehe",LOW_VALUE
+"bruh",LOW_VALUE
+"rip",LOW_VALUE
+"gg",LOW_VALUE
+"ggwp",LOW_VALUE
+"got it",LOW_VALUE
+"i see",LOW_VALUE
+"makes sense",LOW_VALUE
+"understood",LOW_VALUE
+"roger",LOW_VALUE
+"copy that",LOW_VALUE
+"ok got it",LOW_VALUE
+"yessir",LOW_VALUE
+"no worries",LOW_VALUE
+"all good",LOW_VALUE
+"done",LOW_VALUE
+"nice one",LOW_VALUE
+"cool cool",LOW_VALUE
+"ok ok",LOW_VALUE
+"??",LOW_VALUE
+"???",LOW_VALUE
+"????",LOW_VALUE
+"...",LOW_VALUE
+"lol ok",LOW_VALUE
+"ok lol",LOW_VALUE
+"pls",LOW_VALUE
+"please",LOW_VALUE
+"plz",LOW_VALUE
+"help",LOW_VALUE
+"help?",LOW_VALUE
+"anyone?",LOW_VALUE
+"test",LOW_VALUE
+"testing",LOW_VALUE
+"asdf",LOW_VALUE
+"qwerty",LOW_VALUE
+"nice thanks",LOW_VALUE
+"thanks again",LOW_VALUE
+"thanks bro",LOW_VALUE
+"ty bro",LOW_VALUE
+"ok bro",LOW_VALUE
+"ok man",LOW_VALUE
+"ok sure",LOW_VALUE
+"ok bet",LOW_VALUE
+"ok aight",LOW_VALUE
+"cool thanks",LOW_VALUE
+"thank u",LOW_VALUE
+"thnk you",LOW_VALUE
+"thnks",LOW_VALUE
+"okie",LOW_VALUE
+"okie dokie",LOW_VALUE
+"k thx",LOW_VALUE
+"k thanks",LOW_VALUE
+"ok thx",LOW_VALUE
+"yo thanks",LOW_VALUE
+"hey thanks",LOW_VALUE
+"hi thanks",LOW_VALUE
+"nice ok",LOW_VALUE
+"cool ok",LOW_VALUE
+"yup ok",LOW_VALUE
+"fine",LOW_VALUE
+"whatever",LOW_VALUE
+"meh",LOW_VALUE
+"ok then",LOW_VALUE
+"ok?",LOW_VALUE
+"okay?",LOW_VALUE
+"k?",LOW_VALUE
+"lol?",LOW_VALUE
+"lmao?",LOW_VALUE
+"yo?",LOW_VALUE
+"hey?",LOW_VALUE
+"hi?",LOW_VALUE
+"thanks?",LOW_VALUE
+
+"compare redux vs zustand for a large react app and explain tradeoffs",REASONING
+"compare rest vs graphql for a mobile client and explain pros and cons",REASONING
+"compare postgres vs mysql for write heavy workloads",REASONING
+"compare monolith vs microservices for a small team",REASONING
+"compare http 1 1 vs http 2 and explain differences",REASONING
+"design a caching strategy for an api with rate limiting",REASONING
+"design a database schema for a multi tenant saas",REASONING
+"design a realtime chat architecture with websockets",REASONING
+"design a queue worker system for image processing",REASONING
+"design an observability strategy logs metrics tracing",REASONING
+"how would you architect auth with refresh tokens for a spa",REASONING
+"how would you implement oauth login securely in a web app",REASONING
+"how would you handle retries with exponential backoff",REASONING
+"how would you shard a growing user table",REASONING
+"how would you model permissions roles and policies",REASONING
+"help me debug why my react component rerenders infinitely",REASONING
+"debug why my fetch request is blocked by cors",REASONING
+"debug a typeerror cannot read properties of undefined",REASONING
+"why do i get a referenceerror foo is not defined",REASONING
+"my node process memory keeps growing how do i debug a leak",REASONING
+"optimize this sql query and explain indexing strategy",REASONING
+"optimize a slow endpoint under high concurrency",REASONING
+"refactor this function for readability and performance",REASONING
+"refactor code to reduce cyclomatic complexity",REASONING
+"how do i speed up my react build and reduce bundle size",REASONING
+"implement a binary search tree in typescript and explain complexity",REASONING
+"implement an lru cache in typescript",REASONING
+"implement debounce in javascript with an example",REASONING
+"implement rate limiting token bucket in node",REASONING
+"implement a simple pubsub system in typescript",REASONING
+"write a function to deep merge two objects without mutation",REASONING
+"write a parser for arithmetic expressions",REASONING
+"build a react hook for polling with cancellation",REASONING
+"build a state machine for a checkout flow with retries",REASONING
+"propose an approach given these constraints and justify it",REASONING
+"given limited ram propose a caching approach",REASONING
+"given a flaky test in ci but not locally what should i check",REASONING
+"i have crashloopbackoff in kubernetes how do i troubleshoot",REASONING
+"why is my docker image so large and how can i reduce it",REASONING
+"explain step by step how you would debug a production outage",REASONING
+"explain how to choose indexes for this query workload",REASONING
+"explain why eventual consistency might be acceptable here",REASONING
+"explain tradeoffs of strong consistency vs availability",REASONING
+"how do i prevent race conditions in this async code",REASONING
+"how do i make this api idempotent and safe to retry",REASONING
+"how do i structure a monorepo with shared packages",REASONING
+"how do i migrate from javascript to typescript safely",REASONING
+"help me plan a rollout strategy with feature flags",REASONING
+"help me design a permissions system for an enterprise app",REASONING
+"design a ci cd pipeline with staging and rollback",REASONING
+"design a file upload pipeline with virus scanning",REASONING
+"design a secure password reset flow",REASONING
+"design a session management strategy for multiple devices",REASONING
+"explain why my useeffect is looping and how to fix it",REASONING
+"explain why my component is rerendering and how to memoize",REASONING
+"explain how to handle csrf in a single page app",REASONING
+"explain how to store jwt securely in a browser",REASONING
+"compare cookies vs localstorage for auth tokens",REASONING
+"compare websockets vs server sent events for realtime updates",REASONING
+"compare redis vs memcached for caching and why",REASONING
+"compare rabbitmq vs kafka for event streaming",REASONING
+"optimize a graphql resolver that causes n plus 1 queries",REASONING
+"debug why my database connections are exhausted",REASONING
+"debug why my api intermittently returns 502",REASONING
+"how should i handle pagination cursor vs offset",REASONING
+"how would you model time series data efficiently",REASONING
+"how do i enforce rate limits per user and per ip",REASONING
+"build a retry strategy with jitter and backoff",REASONING
+"propose a caching key strategy for multi locale content",REASONING
+"refactor this endpoint to be more testable",REASONING
+"write unit tests for this function and explain edge cases",REASONING
+ok got it,LOW_VALUE
+ok i got it,LOW_VALUE
+ok gotcha,LOW_VALUE
+got it,LOW_VALUE
+got it thanks,LOW_VALUE
+got it thank you,LOW_VALUE
+i got it,LOW_VALUE
+i get it now,LOW_VALUE
+i see,LOW_VALUE
+i see thanks,LOW_VALUE
+i see now,LOW_VALUE
+makes sense,LOW_VALUE
+makes sense thanks,LOW_VALUE
+makes sense now,LOW_VALUE
+that makes sense,LOW_VALUE
+understood,LOW_VALUE
+understood thanks,LOW_VALUE
+understood now,LOW_VALUE
+ok understood,LOW_VALUE
+ok i understand,LOW_VALUE
+i understand,LOW_VALUE
+clear now,LOW_VALUE
+thats clear,LOW_VALUE
+all clear,LOW_VALUE
+ok all clear,LOW_VALUE
+cool got it,LOW_VALUE
+cool thanks,LOW_VALUE
+cool i see,LOW_VALUE
+cool understood,LOW_VALUE
+alright got it,LOW_VALUE
+alright i see,LOW_VALUE
+alright understood,LOW_VALUE
+alright makes sense,LOW_VALUE
+okay got it,LOW_VALUE
+okay i see,LOW_VALUE
+okay makes sense,LOW_VALUE
+ok makes sense,LOW_VALUE
+thanks got it,LOW_VALUE
+thanks i see,LOW_VALUE
+thanks makes sense,LOW_VALUE
+thanks understood,LOW_VALUE
+appreciate it got it,LOW_VALUE
+appreciate it thanks,LOW_VALUE
+roger that,LOW_VALUE
+copy that,LOW_VALUE
+copy thanks,LOW_VALUE
+sounds good,LOW_VALUE
+sounds good thanks,LOW_VALUE
+that helps,LOW_VALUE
+that helps thanks,LOW_VALUE
+helpful thanks,LOW_VALUE
+good to know,LOW_VALUE
+good to know thanks,LOW_VALUE
+noted,LOW_VALUE
+noted thanks,LOW_VALUE
+acknowledged,LOW_VALUE
+acknowledged thanks,LOW_VALUE

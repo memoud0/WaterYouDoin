@@ -2,13 +2,17 @@ import { clamp01 } from  "./thresholds"
 
 export type ModelClass = "FACTUAL" | "LOW_VALUE" | "REASONING";
 
-export type ModelWeights = {
+export interface ModelWeights {
   version: number;
-  classes: ModelClass[];
-  // For one-vs-rest logistic regression:
-  // score_c = sigmoid(b_c + w_c · x)
-  weights: Record<ModelClass, { b: number; w: number[] }>;
-};
+  classes: ("FACTUAL" | "LOW_VALUE" | "REASONING")[];
+  featureOrder: string[];
+  weights: Record<"FACTUAL" | "LOW_VALUE" | "REASONING", ClassWeights>;
+}
+
+export interface ClassWeights {
+  w: number[];
+  b: number;
+}
 
 export type ModelResult = {
   probs: Record<ModelClass, number>; // 0..1 (not necessarily summing to 1 if one-vs-rest)
