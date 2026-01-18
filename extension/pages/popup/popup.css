@@ -4,8 +4,18 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Quicksand", sans-serif;
-  height: 615px; 
-  overflow-y: hidden;
+  width: 360px;
+  height: 615px;
+  overflow: hidden;
+}
+
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 /* ---------- FRAME ---------- */
@@ -13,8 +23,7 @@ body {
 .top-frame {
   position: relative; /* Needed for settings button positioning */
   width: 360px;
-  /* min-height: 520px; */
-  height: 100%;
+  height: 615px;
   box-sizing: border-box;
 
   padding: 25px;
