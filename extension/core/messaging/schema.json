@@ -1,0 +1,291 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WaterYouDoin Messaging Schema",
+  "oneOf": [
+    { "$ref": "#/definitions/PromptSubmitMsg" },
+    { "$ref": "#/definitions/DecisionMsg" },
+    { "$ref": "#/definitions/NudgeResultMsg" },
+    { "$ref": "#/definitions/GetStatsMsg" },
+    { "$ref": "#/definitions/GetStatsRes" },
+    { "$ref": "#/definitions/MetricsUpdateMsg" },
+    { "$ref": "#/definitions/ClassifyOnlyMsg" }
+  ],
+  "definitions": {
+    "PromptType": {
+      "type": "string",
+      "enum": ["FACTUAL", "LOW_VALUE", "REASONING"]
+    },
+    "MascotState": {
+      "type": "string",
+      "enum": ["SOLID", "THINKING", "MELTING", "DROPLET"]
+    },
+    "PromptContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "siteId": { "type": "string" },
+        "inputId": { "type": "string" },
+        "selection": { "type": "string" },
+        "modelHint": { "type": "string" }
+      }
+    },
+    "SegmentDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "classification", "confidence"],
+      "properties": {
+        "text": { "type": "string" },
+        "classification": { "$ref": "#/definitions/PromptType" },
+        "confidence": { "type": "number" },
+        "signals": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "StoredStats": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "lifetime", "today", "water", "severity", "settings", "lastPrompts"],
+      "properties": {
+        "version": { "type": "number" },
+        "lifetime": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "avoidedAiCalls": { "type": "number" },
+            "factualRedirects": { "type": "number" },
+            "lowValueBlocks": { "type": "number" },
+            "reasoningNudges": { "type": "number" },
+            "tryMyselfClicks": { "type": "number" },
+            "askAIAnywayClicks": { "type": "number" },
+            "totalThinkTimeMs": { "type": "number" },
+            "duplicateBlocked": { "type": "number" }
+          }
+        },
+        "today": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "dataKey": { "type": "string" },
+            "avoidedAiCalls": { "type": "number" },
+            "factualRedirects": { "type": "number" },
+            "lowValueBlocks": { "type": "number" },
+            "reasoningNudges": { "type": "number" },
+            "tryMyselfClicks": { "type": "number" },
+            "askAIAnywayClicks": { "type": "number" },
+            "totalThinkTimeMs": { "type": "number" },
+            "duplicateBlocked": { "type": "number" }
+          }
+        },
+        "water": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "litersPerAvoidedCall": { "type": "number" },
+            "litersSavedLifetime": { "type": "number" },
+            "litersSavedDaily": { "type": "number" }
+          }
+        },
+        "severity": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "score": { "type": "number" },
+            "mascotState": { "$ref": "#/definitions/MascotState" }
+          }
+        },
+        "settings": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "enableNudge": { "type": "boolean" },
+            "nudgeWaitMs": { "type": "number" },
+            "searchProvider": { "type": "string", "enum": ["DOGPILE", "GOOGLE"] },
+            "debugLogs": { "type": "boolean" }
+          }
+        },
+        "lastPrompts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "lastHash": { "type": "string" },
+            "lastTimestamp": { "type": "number" }
+          }
+        }
+      }
+    },
+    "PromptSubmitMsg": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "prompt", "pageUrl", "timestamp"],
+      "properties": {
+        "type": { "const": "PROMPT_SUBMIT" },
+        "prompt": { "type": "string" },
+        "pageUrl": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "context": { "$ref": "#/definitions/PromptContext" }
+      }
+    },
+    "DecisionMsg": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "action", "classification", "confidence", "signals"],
+          "properties": {
+            "type": { "const": "DECISION" },
+            "action": { "const": "ALLOW" },
+            "classification": { "$ref": "#/definitions/PromptType" },
+            "confidence": { "type": "number" },
+            "signals": { "type": "array", "items": { "type": "string" } },
+            "probs": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "FACTUAL": { "type": "number" },
+                "LOW_VALUE": { "type": "number" },
+                "REASONING": { "type": "number" }
+              }
+            },
+            "segments": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/SegmentDecision" }
+            },
+            "metricsSnapshot": { "$ref": "#/definitions/StoredStats" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "action", "classification", "confidence", "signals", "reason"],
+          "properties": {
+            "type": { "const": "DECISION" },
+            "action": { "const": "BLOCK_LOW_VALUE" },
+            "reason": { "type": "string" },
+            "classification": { "$ref": "#/definitions/PromptType" },
+            "confidence": { "type": "number" },
+            "signals": { "type": "array", "items": { "type": "string" } },
+            "probs": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "FACTUAL": { "type": "number" },
+                "LOW_VALUE": { "type": "number" },
+                "REASONING": { "type": "number" }
+              }
+            },
+            "segments": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/SegmentDecision" }
+            },
+            "metricsSnapshot": { "$ref": "#/definitions/StoredStats" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "action", "classification", "confidence", "signals", "nudgeId", "suggestedWaitMs"],
+          "properties": {
+            "type": { "const": "DECISION" },
+            "action": { "const": "SHOW_NUDGE" },
+            "nudgeId": { "type": "string" },
+            "suggestedWaitMs": { "type": "number" },
+            "classification": { "$ref": "#/definitions/PromptType" },
+            "confidence": { "type": "number" },
+            "signals": { "type": "array", "items": { "type": "string" } },
+            "probs": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "FACTUAL": { "type": "number" },
+                "LOW_VALUE": { "type": "number" },
+                "REASONING": { "type": "number" }
+              }
+            },
+            "segments": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/SegmentDecision" }
+            },
+            "metricsSnapshot": { "$ref": "#/definitions/StoredStats" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["type", "action", "classification", "confidence", "signals", "url"],
+          "properties": {
+            "type": { "const": "DECISION" },
+            "action": { "const": "REDIRECT" },
+            "url": { "type": "string" },
+            "classification": { "$ref": "#/definitions/PromptType" },
+            "confidence": { "type": "number" },
+            "signals": { "type": "array", "items": { "type": "string" } },
+            "probs": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "FACTUAL": { "type": "number" },
+                "LOW_VALUE": { "type": "number" },
+                "REASONING": { "type": "number" }
+              }
+            },
+            "segments": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/SegmentDecision" }
+            },
+            "metricsSnapshot": { "$ref": "#/definitions/StoredStats" }
+          }
+        }
+      ]
+    },
+    "NudgeResultMsg": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "nudgeId", "choice"],
+      "properties": {
+        "type": { "const": "NUDGE_RESULT" },
+        "nudgeId": { "type": "string" },
+        "choice": { "enum": ["TRY_MYSELF", "ASK_AI_ANYWAY"] },
+        "waitedMs": { "type": "number" }
+      }
+    },
+    "GetStatsMsg": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "properties": {
+        "type": { "const": "GET_STATS" }
+      }
+    },
+    "GetStatsRes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "data"],
+      "properties": {
+        "type": { "const": "STATS" },
+        "data": { "$ref": "#/definitions/StoredStats" }
+      }
+    },
+    "MetricsUpdateMsg": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "data"],
+      "properties": {
+        "type": { "const": "METRICS_UPDATE" },
+        "data": { "$ref": "#/definitions/StoredStats" }
+      }
+    },
+    "ClassifyOnlyMsg": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "prompt"],
+      "properties": {
+        "type": { "const": "CLASSIFY_ONLY" },
+        "prompt": { "type": "string" },
+        "context": { "$ref": "#/definitions/PromptContext" }
+      }
+    }
+  }
+}

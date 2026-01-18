@@ -1,15 +1,42 @@
+import type { PromptType, StoredStats } from "../storage/schema";
+
+export type PromptContext = {
+  siteId?: string;
+  inputId?: string;
+  selection?: string;
+  modelHint?: string;
+};
+
 export type PromptSubmitMsg = {
   type: "PROMPT_SUBMIT";
   prompt: string;
   pageUrl: string;
   timestamp: number;
+  context?: PromptContext;
+};
+
+export type SegmentDecision = {
+  text: string;
+  classification: PromptType;
+  confidence: number;
+  signals?: string[];
+};
+
+export type DecisionBase = {
+  type: "DECISION";
+  classification: PromptType;
+  confidence: number;
+  signals: string[];
+  probs?: Record<PromptType, number>;
+  segments?: SegmentDecision[];
+  metricsSnapshot?: StoredStats;
 };
 
 export type DecisionMsg =
-  | { type: "DECISION"; action: "ALLOW" }
-  | { type: "DECISION"; action: "BLOCK_LOW_VALUE"; reason: string }
-  | { type: "DECISION"; action: "SHOW_NUDGE"; nudgeId: string; suggestedWaitMs: number }
-  | { type: "DECISION"; action: "REDIRECT"; url: string };
+  | (DecisionBase & { action: "ALLOW" })
+  | (DecisionBase & { action: "BLOCK_LOW_VALUE"; reason: string })
+  | (DecisionBase & { action: "SHOW_NUDGE"; nudgeId: string; suggestedWaitMs: number })
+  | (DecisionBase & { action: "REDIRECT"; url: string });
 
 export type NudgeResultMsg = {
   type: "NUDGE_RESULT";
@@ -19,6 +46,24 @@ export type NudgeResultMsg = {
 };
 
 export type GetStatsMsg = { type: "GET_STATS" };
-export type GetStatsRes = { type: "STATS"; data: unknown };
+export type GetStatsRes = { type: "STATS"; data: StoredStats };
 
-export type AnyMsg = PromptSubmitMsg | DecisionMsg | NudgeResultMsg | GetStatsMsg | GetStatsRes;
+export type MetricsUpdateMsg = {
+  type: "METRICS_UPDATE";
+  data: StoredStats;
+};
+
+export type ClassifyOnlyMsg = {
+  type: "CLASSIFY_ONLY";
+  prompt: string;
+  context?: PromptContext;
+};
+
+export type AnyMsg =
+  | PromptSubmitMsg
+  | DecisionMsg
+  | NudgeResultMsg
+  | GetStatsMsg
+  | GetStatsRes
+  | MetricsUpdateMsg
+  | ClassifyOnlyMsg;
