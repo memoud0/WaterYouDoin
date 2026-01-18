@@ -25,113 +25,17 @@ type BackgroundMsg =
   | { type: "PROMPT_SUBMIT"; prompt: string; timestamp: number }
   | { type: "NUDGE_RESULT"; choice: "TRY_MYSELF" | "ASK_AI_ANYWAY"; waitedMs?: number };
 
-chrome.runtime.onMessage.addListener(
-  (msg: BackgroundMsg, sender, sendResponse) => {
-    (async () => {
-      try {
-        if (msg?.type === "GET_STATS") {
-          const s = await getStats();
-          sendResponse({ type: "STATS", data: s });
-          return;
-        }
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.type !== "PROMPT_SUBMIT") return;
 
-        if (msg?.type === "NUDGE_RESULT") {
-          const { choice, waitedMs } = msg;
+  const { prompt } = msg;
 
-          if (choice === "TRY_MYSELF") {
-            await recordTryMyself(waitedMs ?? 0);
-          } else {
-            await recordAskAIAnyway();
-          }
+  console.log("[WaterYouDoin] Background received prompt:", prompt);
 
-          sendResponse({ ok: true });
-          return;
-        }
+  // TEMP: always allow
+  sendResponse({ action: "ALLOW" });
 
-        if (msg?.type !== "PROMPT_SUBMIT") {
-          sendResponse({ ok: false });
-          return;
-        }
+  // Required for async safety in MV3
+  return true;
+});
 
-        const stats = await getStats();
-        if (!stats.settings.enabled) {
-          sendResponse({ type: "DECISION", action: "ALLOW" });
-          return;
-        }
-
-        const prompt = String(msg.prompt ?? "");
-        const timestamp = Number(msg.timestamp ?? Date.now());
-
-        // ----- Duplicate memory -----
-        const norm = normalize(prompt);
-        const hash = fnv1a32(norm);
-
-        const lastHash = stats.lastPrompts.lastHash;
-        const lastTimestamp = stats.lastPrompts.lastTimestamp;
-
-        const r = factualOrNot(prompt, {
-          lastHash,
-          lastTimestamp,
-          nowTimestamp: timestamp,
-          duplicateWindowMs: 8000,
-          modelWeights: MODEL_WEIGHTS,
-        });
-
-        // update duplicate memory immediately
-        await updateStats((prev) => {
-          prev.lastPrompts.lastHash = hash;
-          prev.lastPrompts.lastTimestamp = timestamp;
-          return prev;
-        });
-
-        if (stats.settings.debugLogs) {
-          console.log("[WaterYouDoin] classify:", { prompt, result: r });
-        }
-
-        // ----- Decisions + counters -----
-
-        if (r.classification === "LOW_VALUE" && r.signals?.includes("duplicate_prompt")) {
-          await recordDuplicateBlocked();
-          sendResponse({ type: "DECISION", action: "BLOCK_LOW_VALUE", reason: "duplicate" });
-          return;
-        }
-
-        if (r.classification === "LOW_VALUE") {
-          await recordLowValueBlock();
-          sendResponse({ type: "DECISION", action: "BLOCK_LOW_VALUE", reason: "low_value" });
-          return;
-        }
-
-        if (r.classification === "FACTUAL") {
-          await recordFactualRedirect();
-          const url = buildSearchUrl("DOGPILE", prompt);
-
-          if (sender?.tab?.id != null) {
-            chrome.tabs.update(sender.tab.id, { url });
-          }
-
-          sendResponse({ type: "DECISION", action: "REDIRECT", url });
-          return;
-        }
-
-        if (stats.settings.enableNudge) {
-          await recordReasoningNudge();
-          sendResponse({
-            type: "DECISION",
-            action: "SHOW_NUDGE",
-            nudgeId: makeNudgeId(),
-            suggestedWaitMs: stats.settings.nudgeWaitMs,
-          });
-          return;
-        }
-
-        sendResponse({ type: "DECISION", action: "ALLOW" });
-      } catch (err) {
-        console.error("[WaterYouDoin] background error:", err);
-        sendResponse({ type: "DECISION", action: "ALLOW" });
-      }
-    })();
-
-    return true; // required for async sendResponse (MV3)
-  }
-);

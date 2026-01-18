@@ -1,18 +1,35 @@
-function findTextarea(): HTMLTextAreaElement | null {
-  return document.querySelector("textarea");
+console.log("[WaterYouDoin] content script loaded");
+
+function findTextbox(): HTMLElement | null {
+  return document.querySelector('#prompt-textarea');
 }
 
-function intercept() {
-  const textarea = findTextarea();
-  if (!textarea) return;
+function intercept(textbox: HTMLElement) {
+  console.log("[WaterYouDoin] intercept ready");
 
-  textarea.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  document.addEventListener(
+    "keydown",
+    (e) => {
+      if (
+        e.key !== "Enter" ||
+        e.shiftKey ||
+        e.isComposing ||
+        !e.isTrusted
+        ) {
+        return;
+        }
+
+
+      // Snapshot BEFORE anything else
+      const snapshot = textbox.innerText;
+      const prompt = snapshot.trim();
+
+      console.log("[WaterYouDoin] prompt captured:", prompt);
+
+      if (!prompt) return;
+
       e.preventDefault();
       e.stopPropagation();
-
-      const prompt = textarea.value;
-      if (!prompt.trim()) return;
 
       chrome.runtime.sendMessage(
         {
@@ -22,29 +39,32 @@ function intercept() {
           timestamp: Date.now()
         },
         (res) => {
-          if (!res) return;
-
-          if (res.action === "ALLOW") {
-            textarea.form?.dispatchEvent(
-              new Event("submit", { bubbles: true })
+          if (res?.action === "ALLOW") {
+            textbox.dispatchEvent(
+              new KeyboardEvent("keydown", {
+                key: "Enter",
+                code: "Enter",
+                bubbles: true
+              })
             );
-          }
-
-          if (res.action === "BLOCK_LOW_VALUE") {
-            console.log("Blocked low-value prompt");
           }
         }
       );
-    }
-  });
+    },
+    true // capture phase
+  );
 }
 
-// ChatGPT is an SPA → wait until textarea exists
+// SPA-safe observer (do NOT disconnect forever)
 const observer = new MutationObserver(() => {
-  if (findTextarea()) {
-    intercept();
-    observer.disconnect();
+  const textbox = findTextbox();
+  if (textbox && !(textbox as any).__wyIntercepted) {
+    (textbox as any).__wyIntercepted = true;
+    intercept(textbox);
   }
 });
 
-observer.observe(document.body, { childList: true, subtree: true });
+observer.observe(document.body, {
+  childList: true,
+  subtree: true
+});
