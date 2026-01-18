@@ -1,0 +1,14 @@
+{
+  "feature_order": [
+    "lenTokens",
+    "startsWithWh",
+    "hasDefine",
+    "hasDatePattern",
+    "hasCodeTokens",
+    "hasErrorWords",
+    "hasCompareWords",
+    "hasBuildVerbs",
+    "hasLookupPhrase",
+    "isStrongLookupStart"
+  ]
+}

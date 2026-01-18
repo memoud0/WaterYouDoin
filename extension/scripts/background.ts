@@ -1,79 +1,227 @@
-import { factualOrNot, ClassifyContext } from "../core/classify/factualOrNot";
+import { classifyComposite } from "../core/classify/segments";
 import MODEL_WEIGHTS from "../core/classify/modelWeights";
-import { buildSearchUrl } from "../core/redirect/search";
-
+import { buildSearchUrl, fetchSearchHtml, SearchProvider, SearchResult } from "../core/redirect/search";
+import { getStats, updateStats, StoredStats } from "../core/storage/schema";
 import {
   recordFactualRedirect,
   recordLowValueBlock,
   recordReasoningNudge,
+  recordTryMyself,
+  recordAskAIAnyway,
+  recordDuplicateBlocked,
 } from "../core/metrics/counters";
+import { normalize } from "../core/utils/text";
+import { fnv1a32 } from "../core/utils/hash";
 
 type BackgroundMsg =
   | { type: "GET_STATS" }
-  | { type: "PROMPT_SUBMIT"; prompt: string; timestamp: number }
-  | {
-      type: "NUDGE_RESULT";
-      choice: "TRY_MYSELF" | "ASK_AI_ANYWAY";
-      waitedMs?: number;
-    };
+  | { type: "PROMPT_SUBMIT"; prompt: string; timestamp?: number }
+  | { type: "NUDGE_RESULT"; choice: "TRY_MYSELF" | "ASK_AI_ANYWAY"; waitedMs?: number }
+  | { type: "FACTUAL_RESULT_CLICK"; prompt?: string }
+  | { type: "PARSE_SEARCH_RESULTS"; html: string; limit?: number };
 
-chrome.runtime.onMessage.addListener(
-  async (msg: BackgroundMsg, sender, sendResponse) => {
-    if (msg.type !== "PROMPT_SUBMIT") return;
+type DecisionPayload = {
+  type: "DECISION";
+  action: "ALLOW" | "BLOCK_LOW_VALUE" | "SHOW_NUDGE" | "REDIRECT";
+  classification: "FACTUAL" | "LOW_VALUE" | "REASONING";
+  confidence: number;
+  signals: string[];
+  probs?: Record<"FACTUAL" | "LOW_VALUE" | "REASONING", number>;
+  reason?: string;
+  url?: string;
+  searchProvider?: SearchProvider;
+  searchResults?: SearchResult[];
+  nudgeId?: string;
+  segments?: unknown;
+  metricsSnapshot?: StoredStats;
+};
 
-    const { prompt, timestamp } = msg;
+function makeNudgeId(): string {
+  return `nudge_${Math.random().toString(16).slice(2)}_${Date.now()}`;
+}
 
-    console.log("[WaterYouDoin] Background received prompt:", prompt);
+function broadcastMetrics(stats?: StoredStats) {
+  if (!stats) return;
+  chrome.runtime.sendMessage({ type: "METRICS_UPDATE", data: stats });
+}
 
-    /* -----------------------------
-       Build classifier context
-    ------------------------------ */
-    const ctx: ClassifyContext = {
-      modelWeights: MODEL_WEIGHTS,
-      strictness: 1.0,
-      nowTimestamp: timestamp,
-    };
+async function ensureOffscreenDocument(): Promise<void> {
+  if (!chrome.offscreen?.hasDocument) return;
+  const exists = await chrome.offscreen.hasDocument();
+  if (exists) return;
+  await chrome.offscreen.createDocument({
+    url: "extension/pages/offscreen/offscreen.html",
+    reasons: ["DOM_PARSER"],
+    justification: "Parse Dogpile search HTML in a DOM context.",
+  });
+}
 
-    /* -----------------------------
-       Classify
-    ------------------------------ */
-    const result = factualOrNot(prompt, ctx);
+async function parseSearchResultsOffscreen(html: string, limit: number): Promise<SearchResult[]> {
+  if (!html) return [];
+  if (!chrome.offscreen?.createDocument) return [];
+  await ensureOffscreenDocument();
 
-    console.log(
-      "[WaterYouDoin] Classification:",
-      result.classification,
-      "confidence:",
-      result.confidence
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(
+      { type: "PARSE_SEARCH_RESULTS", html, limit },
+      (response: { ok?: boolean; results?: SearchResult[] } | undefined) => {
+        if (response?.ok && Array.isArray(response.results)) {
+          resolve(response.results);
+          return;
+        }
+        resolve([]);
+      }
     );
+  });
+}
 
-    /* -----------------------------
-       Decide action
-    ------------------------------ */
-    switch (result.classification) {
-      case "LOW_VALUE":
-        recordLowValueBlock();
-        sendResponse({ action: "BLOCK_LOW_VALUE" });
-        return true;
-
-      case "FACTUAL":
-        recordFactualRedirect();
-        sendResponse({
-          action: "REDIRECT_FACT",
-          redirectUrl: buildSearchUrl(prompt),
-        });
-        return true;
-
-      case "REASONING":
-        recordReasoningNudge();
-        sendResponse({
-          action: "NUDGE_REASONING",
-          waitMs: 10_000,
-        });
-        return true;
-
-      default:
-        sendResponse({ action: "ALLOW" });
-        return true;
-    }
+chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) => {
+  if (msg.type === "PARSE_SEARCH_RESULTS") {
+    return false;
   }
-);
+
+  (async () => {
+    // 1. GET STATS
+    if (msg.type === "GET_STATS") {
+      const s = await getStats();
+      sendResponse({ type: "STATS", data: s });
+      return;
+    }
+
+    // 2. HANDLE UI FEEDBACK
+    if (msg.type === "NUDGE_RESULT") {
+      const { choice, waitedMs } = msg;
+      let stats: StoredStats | undefined;
+      
+      if (choice === "TRY_MYSELF") {
+        stats = await recordTryMyself(waitedMs ?? 0);
+      } else {
+        stats = await recordAskAIAnyway();
+      }
+      
+      broadcastMetrics(stats);
+      sendResponse({ ok: true, metricsSnapshot: stats });
+      return;
+    }
+
+    if (msg.type === "FACTUAL_RESULT_CLICK") {
+      // FIX: Added 'const' here to declare a local variable
+      const stats = await recordFactualRedirect(msg.prompt);
+      broadcastMetrics(stats);
+      sendResponse({ ok: true, metricsSnapshot: stats });
+      return;
+    }
+
+    // 3. HANDLE PROMPT SUBMISSION
+    if (msg.type !== "PROMPT_SUBMIT") {
+      sendResponse({ ok: false });
+      return;
+    }
+
+    // Only declared here, which caused the Temporal Dead Zone error before
+    const stats = await getStats();
+    
+    if (!stats.settings.enabled) {
+      sendResponse({
+        type: "DECISION",
+        action: "ALLOW",
+        classification: "REASONING",
+        confidence: 0,
+        signals: ["disabled"],
+        metricsSnapshot: stats,
+      });
+      return;
+    }
+
+    const prompt = String(msg.prompt ?? "");
+    const timestamp = Number(msg.timestamp ?? Date.now());
+
+    const norm = normalize(prompt);
+    const hash = fnv1a32(norm);
+    const lastHash = stats.lastPrompts.lastHash;
+    const lastTimestamp = stats.lastPrompts.lastTimestamp;
+
+    const r = classifyComposite(prompt, {
+      lastHash,
+      lastTimestamp,
+      nowTimestamp: timestamp,
+      duplicateWindowMs: 8000,
+      modelWeights: MODEL_WEIGHTS,
+    });
+
+    // Store latest prompt after classification so first prompt isn't self-duplicate.
+    await updateStats((prev) => {
+      prev.lastPrompts.lastHash = hash;
+      prev.lastPrompts.lastTimestamp = timestamp;
+      return prev;
+    });
+
+    // A. DUPLICATE or LOW VALUE
+    if (r.classification === "LOW_VALUE") {
+       sendResponse({
+        type: "DECISION",
+        action: "BLOCK_LOW_VALUE",
+        classification: r.classification,
+        confidence: r.confidence,
+        signals: r.signals,
+        probs: r.probs,
+        reason: r.signals?.includes("duplicate_prompt") ? "duplicate" : "low_value",
+        segments: r.segments,
+        metricsSnapshot: stats, 
+      });
+      return;
+    }
+
+    // B. FACTUAL
+    if (r.classification === "FACTUAL") {
+      const provider: SearchProvider = "DOGPILE";
+      const url = buildSearchUrl(provider, prompt);
+      const html = await fetchSearchHtml(provider, prompt);
+      const searchResults = html ? await parseSearchResultsOffscreen(html, 5) : [];
+
+      sendResponse({
+        type: "DECISION",
+        action: "SHOW_NUDGE",
+        classification: r.classification,
+        confidence: r.confidence,
+        signals: r.signals,
+        probs: r.probs,
+        url,
+        searchProvider: provider,
+        searchResults,
+        segments: r.segments,
+        metricsSnapshot: stats,
+      });
+      return;
+    }
+
+    // C. REASONING
+    if (stats.settings.enableNudge) {
+      sendResponse({
+        type: "DECISION",
+        action: "SHOW_NUDGE",
+        classification: r.classification,
+        confidence: r.confidence,
+        signals: r.signals,
+        probs: r.probs,
+        nudgeId: makeNudgeId(),
+        segments: r.segments,
+        metricsSnapshot: stats,
+      });
+      return;
+    }
+
+    // D. ALLOW
+    sendResponse({
+      type: "DECISION",
+      action: "ALLOW",
+      classification: r.classification,
+      confidence: r.confidence,
+      signals: r.signals,
+      probs: r.probs,
+      segments: r.segments,
+    });
+  })();
+
+  return true;
+});

@@ -6,8 +6,8 @@ export type Thresholds = {
 };
 
 export const DEFAULT_THRESHOLDS: Thresholds = {
-  factual: 0.75,
-  lowValue: 0.85,
+  factual: 0.70,
+  lowValue: 0.60,
 };
 
 // Optional: strictness slider mapping (-1..+1).

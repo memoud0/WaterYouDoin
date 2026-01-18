@@ -37,7 +37,6 @@
     border-radius: 20px;
     max-width: 525px;
     transition: opacity 0.25s ease, visibility 0.25s ease;
-
 }
 
 p, .body-text {

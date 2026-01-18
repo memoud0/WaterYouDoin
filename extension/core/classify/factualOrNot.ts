@@ -96,6 +96,12 @@ export function factualOrNot(promptRaw: string, ctx: ClassifyContext = {}): Clas
   if (finalProbs.FACTUAL >= thresholds.factual) {
     return { classification: "FACTUAL", confidence: finalProbs.FACTUAL, signals, probs: finalProbs };
   }
+
+  // Force long prompts into reasoning if not clearly factual/low-value
+  if (f.lenTokens >= 80) {
+    return { classification: "REASONING", confidence: Math.max(confidence, 0.8), signals: [...signals, "forced_long_reasoning"], probs: finalProbs };
+  }
+
   return { classification: "REASONING", confidence, signals, probs: finalProbs };
 }
 

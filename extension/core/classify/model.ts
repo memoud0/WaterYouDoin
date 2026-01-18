@@ -2,16 +2,20 @@ import { clamp01 } from  "./thresholds"
 
 export type ModelClass = "FACTUAL" | "LOW_VALUE" | "REASONING";
 
-export type ModelWeights = {
+export interface ModelWeights {
   version: number;
-  classes: ModelClass[];
-  // For one-vs-rest logistic regression:
-  // score_c = sigmoid(b_c + w_c · x)
-  weights: Record<ModelClass, { b: number; w: number[] }>;
-};
+  classes: ("FACTUAL" | "LOW_VALUE" | "REASONING")[];
+  featureOrder: string[];
+  weights: Record<"FACTUAL" | "LOW_VALUE" | "REASONING", ClassWeights>;
+}
+
+export interface ClassWeights {
+  w: number[];
+  b: number;
+}
 
 export type ModelResult = {
-  probs: Record<ModelClass, number>; // 0..1 (not necessarily summing to 1 if one-vs-rest)
+  probs: Record<ModelClass, number>; // softmax-normalized 0..1
   signals: string[];
 };
 
@@ -22,8 +26,8 @@ export type ModelResult = {
 export function mlPredictProbs(x: number[], weights?: ModelWeights): ModelResult | null {
   if (!weights) return null;
 
-  const signals: string[] = ["ml_used"];
-  const probs: Record<ModelClass, number> = {
+  const signals: string[] = ["ml_used_softmax"];
+  const logits: Record<ModelClass, number> = {
     FACTUAL: 0,
     LOW_VALUE: 0,
     REASONING: 0,
@@ -31,9 +35,10 @@ export function mlPredictProbs(x: number[], weights?: ModelWeights): ModelResult
 
   for (const c of weights.classes) {
     const { b, w } = weights.weights[c];
-    probs[c] = clamp01(sigmoid(dot(w, x) + b));
+    logits[c] = dot(w, x) + b;
   }
 
+  const probs = softmax(logits);
   return { probs, signals };
 }
 
@@ -44,7 +49,15 @@ function dot(w: number[], x: number[]): number {
   return s;
 }
 
-function sigmoid(z: number): number {
-  // numerically stable enough for small models
-  return 1 / (1 + Math.exp(-z));
+function softmax(p: Record<ModelClass, number>): Record<ModelClass, number> {
+  // numerically stable softmax for 3 classes
+  const vals = [p.FACTUAL, p.LOW_VALUE, p.REASONING];
+  const m = Math.max(...vals);
+  const exps = vals.map((v) => Math.exp(v - m));
+  const sum = exps.reduce((a, b) => a + b, 0) || 1;
+  return {
+    FACTUAL: exps[0] / sum,
+    LOW_VALUE: exps[1] / sum,
+    REASONING: exps[2] / sum,
+  };
 }

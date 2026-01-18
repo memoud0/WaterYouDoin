@@ -1,18 +1,33 @@
 import { StoredStats } from "../storage/schema";
 
 export const recalculateWater = (stats: StoredStats): StoredStats => {
-    const litersPerCall = stats.water.litersPerAvoidedCall;
+    const litersPerThousandTokens = stats.water.litersPerThousandTokens || 0.5;
+    
+    // SAVED
+    const tokensSavedLife = stats.water.tokensAvoidedLifetime;
+    const tokensSavedDay = stats.water.tokensAvoidedDaily;
+    const litersSavedLife = (tokensSavedLife / 1000) * litersPerThousandTokens;
+    const litersSavedDay = (tokensSavedDay / 1000) * litersPerThousandTokens;
 
-    const newLiftimeWater = stats.lifetime.avoidedAiCalls * litersPerCall;
-
-    const newDailyWater = stats.today.avoidedAiCalls * litersPerCall;
+    // WASTED
+    const tokensWastedLife = stats.water.tokensWastedLifetime || 0;
+    const tokensWastedDay = stats.water.tokensWastedDaily || 0;
+    const litersWastedLife = (tokensWastedLife / 1000) * litersPerThousandTokens;
+    const litersWastedDay = (tokensWastedDay / 1000) * litersPerThousandTokens;
 
     return {
         ...stats,
         water: {
             ...stats.water,
-            litersSavedLifetime: newLiftimeWater,
-            litersSavedDaily: newDailyWater,
+            // Update Saved
+            litersSavedLifetime: litersSavedLife,
+            litersSavedDaily: litersSavedDay,
+            
+            // Update Wasted
+            tokensWastedLifetime: tokensWastedLife,
+            tokensWastedDaily: tokensWastedDay,
+            litersWastedLifetime: litersWastedLife,
+            litersWastedDaily: litersWastedDay,
         }
     };
 };

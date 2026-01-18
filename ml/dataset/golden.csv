@@ -1,0 +1,31 @@
+prompt,label
+"what is tcp",FACTUAL
+"what does jwt stand for",FACTUAL
+"capital of canada",FACTUAL
+"timezone of tokyo",FACTUAL
+"syntax for python list comprehension",FACTUAL
+"http 404 meaning",FACTUAL
+"port 443 used for",FACTUAL
+"release date of react",FACTUAL
+"meaning of idempotent",FACTUAL
+"definition of rest",FACTUAL
+"compare oauth vs saml and explain tradeoffs",REASONING
+"design a caching strategy for this api with rate limiting",REASONING
+"debug why my react component rerenders infinitely",REASONING
+"optimize this sql query and explain indexing",REASONING
+"implement debounce in javascript with example",REASONING
+"architect a file upload pipeline with virus scanning",REASONING
+"compare redis vs memcached for caching and why",REASONING
+"why is my docker image so large and how can i reduce it",REASONING
+"explain why eventual consistency might be acceptable here",REASONING
+"build a retry strategy with jitter and backoff",REASONING
+"ok",LOW_VALUE
+"thanks",LOW_VALUE
+"lol",LOW_VALUE
+"??",LOW_VALUE
+"k",LOW_VALUE
+"hi",LOW_VALUE
+"cool",LOW_VALUE
+"great",LOW_VALUE
+"okkk",LOW_VALUE
+"awesome thanks",LOW_VALUE

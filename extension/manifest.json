@@ -4,12 +4,13 @@
   "version": "0.1.0",
   "description": "Encourages intentional AI usage by intercepting low-value prompts.",
 
-  "permissions": ["storage", "tabs", "scripting"],
+  "permissions": ["storage", "tabs", "scripting", "offscreen"],
 
   "host_permissions": [
     "https://chatgpt.com/*",
     "https://chat.openai.com/*",
-    "https://www.dogpile.com/*"
+    "https://www.dogpile.com/*",
+    "https://www.google.com/*"
   ],
 
   "background": {
@@ -34,6 +35,13 @@
   },
 
   "icons": {
-    "16": "extension/assets/icons/ICECUBE.PNG"
-  }
+    "16": "extension/assets/icons/logo.png"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["extension/assets/mascot/*.png", "extension/assets/mascot/*.PNG"],
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"]
+    }
+  ]
 }
