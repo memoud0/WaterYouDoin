@@ -34,6 +34,6 @@
   },
 
   "icons": {
-    "16": "extension/assets/icons/icecube.png"
+    "16": "/assets/icons/logo.png"
   }
 }
