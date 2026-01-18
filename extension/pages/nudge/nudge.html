@@ -10,21 +10,20 @@
 </head>
 
 <body>
-    <div id="popup" class="popup-frame opened">
-        <img class="popup-cube" src="../../assets/mascot/cube-thinking.png">
+    <div id="popup" class="popup-frame closed">
+        <img id="popup-cube" class="popup-cube" src="">
         <div class="popup-body">
-            <img id="popup-close-button" 
-                class="popup-close-button"
-                src="../../assets/icons/button-close.png"
+            <img
+            id="popup-close-button"
+            class="popup-close-button"
+            src="../../assets/icons/button-close.png"
             >
-            <div class="popup-title">
-                This looks reasoning-heavy!
-            </div>
-            <div class="body-text"> 
-                Try to rewrite this prompt by using clearer wording to avoid using too much computing power!
-            </div>
-        </div>  
-    </div>
+            <div id="popup-title" class="popup-title"></div>
+            <div id="popup-text" class="body-text"></div>
+            <a id="popup-link" class="popup-link" target="_blank"></a>
+        </div>
+        </div>
+
 </body>
 
 <script>
