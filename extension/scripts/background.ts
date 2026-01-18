@@ -138,12 +138,6 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
 
     const norm = normalize(prompt);
     const hash = fnv1a32(norm);
-    await updateStats((prev) => {
-      prev.lastPrompts.lastHash = hash;
-      prev.lastPrompts.lastTimestamp = timestamp;
-      return prev;
-    });
-
     const lastHash = stats.lastPrompts.lastHash;
     const lastTimestamp = stats.lastPrompts.lastTimestamp;
 
@@ -153,6 +147,13 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
       nowTimestamp: timestamp,
       duplicateWindowMs: 8000,
       modelWeights: MODEL_WEIGHTS,
+    });
+
+    // Store latest prompt after classification so first prompt isn't self-duplicate.
+    await updateStats((prev) => {
+      prev.lastPrompts.lastHash = hash;
+      prev.lastPrompts.lastTimestamp = timestamp;
+      return prev;
     });
 
     // A. DUPLICATE or LOW VALUE
