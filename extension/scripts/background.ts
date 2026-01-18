@@ -81,55 +81,61 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
   }
 
   (async () => {
+    // 1. GET STATS
     if (msg.type === "GET_STATS") {
       const s = await getStats();
       sendResponse({ type: "STATS", data: s });
       return;
     }
 
+    // 2. HANDLE UI FEEDBACK
     if (msg.type === "NUDGE_RESULT") {
       const { choice, waitedMs } = msg;
       let stats: StoredStats | undefined;
+      
       if (choice === "TRY_MYSELF") {
         stats = await recordTryMyself(waitedMs ?? 0);
       } else {
         stats = await recordAskAIAnyway();
       }
+      
       broadcastMetrics(stats);
       sendResponse({ ok: true, metricsSnapshot: stats });
       return;
     }
 
     if (msg.type === "FACTUAL_RESULT_CLICK") {
+      // FIX: Added 'const' here to declare a local variable
       const stats = await recordFactualRedirect(msg.prompt);
       broadcastMetrics(stats);
       sendResponse({ ok: true, metricsSnapshot: stats });
       return;
     }
 
+    // 3. HANDLE PROMPT SUBMISSION
     if (msg.type !== "PROMPT_SUBMIT") {
       sendResponse({ ok: false });
       return;
     }
 
+    // Only declared here, which caused the Temporal Dead Zone error before
     const stats = await getStats();
+    
     if (!stats.settings.enabled) {
-      const payload: DecisionPayload = {
+      sendResponse({
         type: "DECISION",
         action: "ALLOW",
         classification: "REASONING",
         confidence: 0,
         signals: ["disabled"],
         metricsSnapshot: stats,
-      };
-      sendResponse(payload);
+      });
       return;
     }
 
     const prompt = String(msg.prompt ?? "");
     const timestamp = Number(msg.timestamp ?? Date.now());
 
-    // Duplicate memory bookkeeping (store hash/timestamp)
     const norm = normalize(prompt);
     const hash = fnv1a32(norm);
     await updateStats((prev) => {
@@ -149,52 +155,30 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
       modelWeights: MODEL_WEIGHTS,
     });
 
-    // Duplicate (special-cased)
-    if (r.classification === "LOW_VALUE" && r.signals?.includes("duplicate_prompt")) {
-      const statsAfter = await recordDuplicateBlocked(prompt);
-      broadcastMetrics(statsAfter);
-      const payload: DecisionPayload = {
-        type: "DECISION",
-        action: "BLOCK_LOW_VALUE",
-        classification: r.classification,
-        confidence: r.confidence,
-        signals: r.signals,
-        probs: r.probs,
-        reason: "duplicate",
-        segments: r.segments,
-        metricsSnapshot: statsAfter,
-      };
-      sendResponse(payload);
-      return;
-    }
-
-    // Low-value
+    // A. DUPLICATE or LOW VALUE
     if (r.classification === "LOW_VALUE") {
-      const statsAfter = await recordLowValueBlock(prompt);
-      broadcastMetrics(statsAfter);
-      const payload: DecisionPayload = {
+       sendResponse({
         type: "DECISION",
         action: "BLOCK_LOW_VALUE",
         classification: r.classification,
         confidence: r.confidence,
         signals: r.signals,
         probs: r.probs,
-        reason: "low_value",
+        reason: r.signals?.includes("duplicate_prompt") ? "duplicate" : "low_value",
         segments: r.segments,
-        metricsSnapshot: statsAfter,
-      };
-      sendResponse(payload);
+        metricsSnapshot: stats, 
+      });
       return;
     }
 
-    // Factual → fetch alternatives and show nudge (no stats increment until user decides)
+    // B. FACTUAL
     if (r.classification === "FACTUAL") {
       const provider: SearchProvider = "DOGPILE";
       const url = buildSearchUrl(provider, prompt);
       const html = await fetchSearchHtml(provider, prompt);
       const searchResults = html ? await parseSearchResultsOffscreen(html, 5) : [];
 
-      const payload: DecisionPayload = {
+      sendResponse({
         type: "DECISION",
         action: "SHOW_NUDGE",
         classification: r.classification,
@@ -206,16 +190,13 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
         searchResults,
         segments: r.segments,
         metricsSnapshot: stats,
-      };
-      sendResponse(payload);
+      });
       return;
     }
 
-    // Reasoning → nudge
+    // C. REASONING
     if (stats.settings.enableNudge) {
-      const statsAfter = await recordReasoningNudge();
-      broadcastMetrics(statsAfter);
-      const payload: DecisionPayload = {
+      sendResponse({
         type: "DECISION",
         action: "SHOW_NUDGE",
         classification: r.classification,
@@ -224,14 +205,13 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
         probs: r.probs,
         nudgeId: makeNudgeId(),
         segments: r.segments,
-        metricsSnapshot: statsAfter,
-      };
-      sendResponse(payload);
+        metricsSnapshot: stats,
+      });
       return;
     }
 
-    // Nudges disabled
-    const payload: DecisionPayload = {
+    // D. ALLOW
+    sendResponse({
       type: "DECISION",
       action: "ALLOW",
       classification: r.classification,
@@ -239,8 +219,7 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
       signals: r.signals,
       probs: r.probs,
       segments: r.segments,
-    };
-    sendResponse(payload);
+    });
   })();
 
   return true;

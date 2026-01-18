@@ -15,7 +15,6 @@ type DecisionResponse = {
   signals?: string[];
 };
 
-// Find ChatGPT's ProseMirror textbox
 function findTextbox(): HTMLElement | null {
   return document.querySelector("#prompt-textarea");
 }
@@ -251,11 +250,15 @@ function createNudgeUI() {
   openSearchBtn.className = "button secondary";
   openSearchBtn.textContent = "Open full search";
 
+  const tryMyselfBtn = document.createElement("button");
+  tryMyselfBtn.className = "button secondary";
+  tryMyselfBtn.textContent = "I'll try myself";
+
   const askAiBtn = document.createElement("button");
   askAiBtn.className = "button primary";
   askAiBtn.textContent = "Ask ChatGPT anyway";
 
-  actions.append(openSearchBtn, askAiBtn);
+  actions.append(openSearchBtn, tryMyselfBtn, askAiBtn);
 
   const closeBtn = document.createElement("button-close");
   closeBtn.className = "close";
@@ -271,6 +274,7 @@ function createNudgeUI() {
   let searchUrl: string | undefined;
   let onAskAi: (() => void) | undefined;
   let anchor: HTMLElement | null = null;
+  let nudgeStart = 0;
 
   const sendAskAnyway = () => {
     chrome.runtime.sendMessage({ type: "NUDGE_RESULT", choice: "ASK_AI_ANYWAY" });
@@ -278,8 +282,15 @@ function createNudgeUI() {
     onAskAi?.();
   };
 
-  closeBtn.addEventListener("click", sendAskAnyway);
+  const sendTryMyself = () => {
+    const waitedMs = Date.now() - nudgeStart;
+    chrome.runtime.sendMessage({ type: "NUDGE_RESULT", choice: "TRY_MYSELF", waitedMs });
+    hide();
+  };
+
+  closeBtn.addEventListener("click", () => hide());
   askAiBtn.addEventListener("click", sendAskAnyway);
+  tryMyselfBtn.addEventListener("click", sendTryMyself);
 
   openSearchBtn.addEventListener("click", () => {
     if (searchUrl) {
@@ -349,13 +360,19 @@ function createNudgeUI() {
     searchUrl = url;
     onAskAi = onAsk;
     anchor = anchorEl ?? anchor;
+    nudgeStart = Date.now();
+
+    mascot.src = chrome.runtime.getURL("extension/assets/mascot/ICECUBE.PNG");
     mascot.src = chrome.runtime.getURL("extension/assets/mascot/cube-thinking.png");
     title.textContent = "This looks factual!";
     subtitle.textContent = "Here are the top 5 Dogpile results with their site name and full URL.";
     renderResults(results, promptForMetrics);
+    
     resultsList.style.display = "block";
     openSearchBtn.style.display = url ? "inline-block" : "none";
+    tryMyselfBtn.style.display = "none";
     askAiBtn.style.display = "inline-block";
+
     wrapper.classList.add("open");
     requestAnimationFrame(() => positionNearAnchor());
   }
@@ -365,17 +382,28 @@ function createNudgeUI() {
     subtitleText: string,
     onAsk?: () => void,
     anchorEl?: HTMLElement,
+    showTryButton = false // NEW PARAMETER
   ) {
     searchUrl = undefined;
     onAskAi = onAsk;
     anchor = anchorEl ?? anchor;
+    nudgeStart = Date.now();
+
+    mascot.src = chrome.runtime.getURL("extension/assets/mascot/ICECUBE.PNG");
     mascot.src = chrome.runtime.getURL("extension/assets/mascot/cube-thinking.png");
     title.textContent = titleText;
     subtitle.textContent = subtitleText;
+    
     resultsList.innerHTML = "";
     resultsList.style.display = "none";
+    
     openSearchBtn.style.display = "none";
+    
+    // CONTROL THE BUTTON VISIBILITY
+    tryMyselfBtn.style.display = showTryButton ? "inline-block" : "none";
+    
     askAiBtn.style.display = "inline-block";
+
     wrapper.classList.add("open");
     requestAnimationFrame(() => positionNearAnchor());
   }
@@ -408,18 +436,6 @@ function pickNudgeCopy(
         subtitle: "You just asked this. Skip the repeat or tweak it slightly before sending.",
       };
     }
-    if (has("punct_or_emoji_only") || has("very_short") || has("short")) {
-      return {
-        title: "Too tiny to bother AI",
-        subtitle: "Add a bit more detail before sending, or just skip this one.",
-      };
-    }
-    if (has("low_value_exact") || has("composite_low_value")) {
-      return {
-        title: "No need for AI here",
-        subtitle: "This one doesn’t need compute. Save it, or rewrite with a clear task.",
-      };
-    }
     return {
       title: "Maybe skip this prompt",
       subtitle: "Doesn’t seem worth AI cycles. If you still need it, tighten the ask first.",
@@ -433,26 +449,12 @@ function pickNudgeCopy(
       subtitle: "Break it into steps or isolate the failing part, then send. You’ll get a better answer.",
     };
   }
-  if (has("has_compare_words") || has("reasoning_strong_words")) {
-    return {
-      title: "This looks reasoning-heavy",
-      subtitle: "Clarify the goal and constraints first. A sharper prompt will save back-and-forth.",
-    };
-  }
-  if (has("long_prompt")) {
-    return {
-      title: "Long prompts waste cycles",
-      subtitle: "Trim the setup and ask a focused question. Then send it.",
-    };
-  }
-
   return {
     title: "Take a beat before asking AI",
     subtitle: "Refine the question or outline your steps. Then send if you still need help.",
   };
 }
 
-// Core interception logic with guards
 function intercept(textbox: HTMLElement) {
   console.log("[WaterYouDoin] intercept ready");
 
@@ -467,7 +469,6 @@ function intercept(textbox: HTMLElement) {
     (e) => {
       if (allowPassthrough) return;
 
-      // Only intercept REAL user Enter presses on the prompt box
       if (
         e.key !== "Enter" ||
         e.shiftKey ||
@@ -482,7 +483,6 @@ function intercept(textbox: HTMLElement) {
       if (!prompt) return;
       lastPromptForMetrics = prompt;
 
-      // Pause ChatGPT submission
       e.preventDefault();
       e.stopPropagation();
 
@@ -522,33 +522,30 @@ function intercept(textbox: HTMLElement) {
               return;
             }
             const copy = pickNudgeCopy(res.classification ?? "REASONING", res.signals);
-            nudge.showMessage(copy.title, copy.subtitle, sendToChatGPT, anchor);
+            // REASONING = SHOW TRY BUTTON
+            nudge.showMessage(copy.title, copy.subtitle, sendToChatGPT, anchor, true);
             return;
           }
 
           if (res.action === "BLOCK_LOW_VALUE") {
             const anchor = findSendButton(textbox) ?? textbox;
             const copy = pickNudgeCopy("LOW_VALUE", res.signals);
-            nudge.showMessage(copy.title, copy.subtitle, sendToChatGPT, anchor);
+            // LOW VALUE = HIDE TRY BUTTON
+            nudge.showMessage(copy.title, copy.subtitle, sendToChatGPT, anchor, false);
             return;
           }
-
-          // Other cases could be handled here
         }
       );
     },
-    true // CAPTURE PHASE (critical)
+    true
   );
 }
 
-// SPA-safe observer: ChatGPT recreates the editor often
 const observer = new MutationObserver(() => {
   const textbox = findTextbox();
-
   if (textbox && !(textbox as any).__wyIntercepted) {
     (textbox as any).__wyIntercepted = true;
     intercept(textbox);
-    // Reduce observer churn once attached; reattach if the box disappears.
     observer.disconnect();
     setTimeout(() => observer.observe(document.body, { childList: true, subtree: true }), 1500);
   }

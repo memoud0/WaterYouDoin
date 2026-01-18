@@ -1,48 +1,60 @@
 import { StoredStats, MascotState } from "../storage/schema";
 
-const THRESHOLDS = {
-  SOLID: 0,
-  MELTING: 60,
-  DROPLET: 85,
-};
-
-const DECAY_PER_HOUR = 12; // score points reduced per hour of inactivity
+// CHANGED: Increased limit to 1.0L (1000mL). 
+// Previously 0.15L (150mL) was too small, causing instant melting.
+const MAX_WASTE_LIMIT_LITERS = 1.0; 
 
 export const recalculteSeverity = (stats: StoredStats): StoredStats => {
   const now = Date.now();
-  const lastUpdated = stats.severity.lastUpdated ?? now;
-  const hoursElapsed = Math.max(0, (now - lastUpdated) / (1000 * 60 * 60));
+  
+  const saved = stats.water.litersSavedDaily || 0;
+  const wasted = stats.water.litersWastedDaily || 0;
+  
+  // Calculate Net Balance
+  // Positive = Good (Green zone)
+  // Negative = Bad (Red zone)
+  const netBalance = saved - wasted;
 
-  let score = 0;
+  let score = 0; // 0 = Solid/Green, 100 = Puddle/Red
 
-  // Negative actions
-  score += stats.today.askAIAnywayClicks * 18;
-  score += stats.today.lowValueBlocks * 3;
-  score += stats.today.duplicateBlocked * 2;
-
-  // Positive actions
-  score -= stats.today.tryMyselfClicks * 12;
-  score -= stats.today.factualRedirects * 6;
-
-  // Decay over time
-  if (hoursElapsed > 0) {
-    score = Math.max(0, score - DECAY_PER_HOUR * hoursElapsed);
+  if (netBalance >= 0) {
+    // RECOVERY: If we are positive (Saved > Wasted), reset completely.
+    // The mascot should be happy.
+    score = 0;
+  } else {
+    // We are in debt.
+    const debt = Math.abs(netBalance);
+    
+    // Calculate percentage of the way to the 1.0L limit
+    // Example: 150mL debt / 1000mL limit = 15% score (Moves slowly)
+    const percentage = (debt / MAX_WASTE_LIMIT_LITERS) * 100;
+    
+    // Clamp to 100 max
+    score = Math.min(100, percentage);
   }
 
-  // Clamp
-  score = Math.max(0, Math.min(100, score));
-
+  // Determine Mascot State based on Slider Position (Score)
   let newState: MascotState = "SOLID";
 
-  const lastAction = stats.lastPrompts.lastTimestamp || 0;
-  const isRecent = Date.now() - lastAction < 5 * 60 * 1000;
-
-  if (isRecent && stats.today.tryMyselfClicks > 0 && score < THRESHOLDS.MELTING) {
-    newState = "THINKING";
-  } else if (score >= THRESHOLDS.DROPLET) {
-    newState = "DROPLET";
-  } else if (score >= THRESHOLDS.MELTING) {
+  if (score >= 95) {
+    // >95% -> Almost full liter debt -> Puddle
+    newState = "DROPLET"; 
+  } else if (score > 25) {
+    // 25% - 95% -> Melting/Concerned
     newState = "MELTING";
+  } else {
+    // 0% - 25% -> Solid/Smiling
+    // Even if slightly in debt (low score), he stays solid to be forgiving.
+    
+    // Check if "Thinking" state applies (recent 'Try Myself')
+    const lastAction = stats.lastPrompts.lastTimestamp || 0;
+    const isRecent = Date.now() - lastAction < 5 * 60 * 1000;
+    
+    if (isRecent && stats.today.tryMyselfClicks > 0 && score === 0) {
+        newState = "THINKING";
+    } else {
+        newState = "SOLID";
+    }
   }
 
   return {

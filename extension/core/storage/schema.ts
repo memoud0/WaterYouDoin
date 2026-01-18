@@ -20,11 +20,19 @@ export interface DailyStats extends LifetimeStats {
 
 export interface WaterStats {
   litersPerAvoidedCall: number;
-  litersSavedLifetime: number;
-  litersSavedDaily: number;
   litersPerThousandTokens: number;
+  
+  // SAVED (Good)
   tokensAvoidedLifetime: number;
   tokensAvoidedDaily: number;
+  litersSavedLifetime: number;
+  litersSavedDaily: number;
+
+  // WASTED (Bad) - New Fields
+  tokensWastedLifetime: number;
+  tokensWastedDaily: number;
+  litersWastedLifetime: number;
+  litersWastedDaily: number;
 }
 
 export interface SeverityStats {
@@ -79,12 +87,19 @@ export const DEFAULT_STATS: StoredStats = {
     duplicateBlocked: 0,
   },
   water: {
-    litersPerAvoidedCall: 0.5, // legacy; kept for backward compatibility
+    litersPerAvoidedCall: 0.5,
     litersPerThousandTokens: 0.5,
+    
     tokensAvoidedLifetime: 0,
     tokensAvoidedDaily: 0,
     litersSavedLifetime: 0,
     litersSavedDaily: 0,
+
+    // Init new fields
+    tokensWastedLifetime: 0,
+    tokensWastedDaily: 0,
+    litersWastedLifetime: 0,
+    litersWastedDaily: 0,
   },
   severity: {
     score: 0,
@@ -127,6 +142,9 @@ export function resetTodayIfNeeded(s: StoredStats): StoredStats {
       ...s.water,
       litersSavedDaily: 0,
       tokensAvoidedDaily: 0,
+      // Reset daily waste too
+      litersWastedDaily: 0,
+      tokensWastedDaily: 0,
     },
   };
 }
