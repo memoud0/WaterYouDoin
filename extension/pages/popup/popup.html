@@ -6,35 +6,25 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="extension/pages/popup/popup.css">
 </head>
 
 <body>
-    <div id="popup" class="popup-frame opened">
-        <img class="popup-cube" src="extension/assets/mascot/cube-thinking.png">
-        <div class="popup-body">
-            <img id="popup-close-button" 
-                class="popup-close-button"
-                src="extension/assets/icons/button-close.png"
-            >
-            <div class="popup-title">
-                This looks reasoning-heavy!
+    <div class="top-frame">
+        <div class="top-title">
+            Hi, User!
+        </div>
+        <div class="row">
+            <div class="column">
+                <img class="top-cube" src="extension/assets/mascot/cube-smiling.png">
             </div>
-            <div class="body-text"> 
-                Try to rewrite this prompt by using clearer wording to avoid using too much computing power!
+            <div class="column">
+                You have saved 10L of water so far.
+                Great job!
             </div>
-        </div>  
+        </div>
     </div>
+
 </body>
-
-<script>
-    const popup = document.getElementById("popup");
-    const closeBtn = document.getElementById("popup-close-button");
-
-    closeBtn.addEventListener("click", () => {
-        popup.classList.remove("opened");
-        popup.classList.add("closed");
-    });
-</script>
 
 </html>
