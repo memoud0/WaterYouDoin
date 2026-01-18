@@ -1,6 +1,6 @@
 import { classifyComposite } from "../core/classify/segments";
 import MODEL_WEIGHTS from "../core/classify/modelWeights";
-import { buildSearchUrl, fetchTopSearchResults, SearchProvider, SearchResult } from "../core/redirect/search";
+import { buildSearchUrl, fetchSearchHtml, SearchProvider, SearchResult } from "../core/redirect/search";
 import { getStats, updateStats, StoredStats } from "../core/storage/schema";
 import {
   recordFactualRedirect,
@@ -17,7 +17,8 @@ type BackgroundMsg =
   | { type: "GET_STATS" }
   | { type: "PROMPT_SUBMIT"; prompt: string; timestamp?: number }
   | { type: "NUDGE_RESULT"; choice: "TRY_MYSELF" | "ASK_AI_ANYWAY"; waitedMs?: number }
-  | { type: "FACTUAL_RESULT_CLICK"; prompt?: string };
+  | { type: "FACTUAL_RESULT_CLICK"; prompt?: string }
+  | { type: "PARSE_SEARCH_RESULTS"; html: string; limit?: number };
 
 type DecisionPayload = {
   type: "DECISION";
@@ -44,7 +45,41 @@ function broadcastMetrics(stats?: StoredStats) {
   chrome.runtime.sendMessage({ type: "METRICS_UPDATE", data: stats });
 }
 
+async function ensureOffscreenDocument(): Promise<void> {
+  if (!chrome.offscreen?.hasDocument) return;
+  const exists = await chrome.offscreen.hasDocument();
+  if (exists) return;
+  await chrome.offscreen.createDocument({
+    url: "extension/pages/offscreen/offscreen.html",
+    reasons: ["DOM_PARSER"],
+    justification: "Parse Dogpile search HTML in a DOM context.",
+  });
+}
+
+async function parseSearchResultsOffscreen(html: string, limit: number): Promise<SearchResult[]> {
+  if (!html) return [];
+  if (!chrome.offscreen?.createDocument) return [];
+  await ensureOffscreenDocument();
+
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage(
+      { type: "PARSE_SEARCH_RESULTS", html, limit },
+      (response: { ok?: boolean; results?: SearchResult[] } | undefined) => {
+        if (response?.ok && Array.isArray(response.results)) {
+          resolve(response.results);
+          return;
+        }
+        resolve([]);
+      }
+    );
+  });
+}
+
 chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) => {
+  if (msg.type === "PARSE_SEARCH_RESULTS") {
+    return false;
+  }
+
   (async () => {
     if (msg.type === "GET_STATS") {
       const s = await getStats();
@@ -154,9 +189,10 @@ chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) 
 
     // Factual → fetch alternatives and show nudge (no stats increment until user decides)
     if (r.classification === "FACTUAL") {
-      const provider = stats.settings.searchProvider || "DOGPILE";
+      const provider: SearchProvider = "DOGPILE";
       const url = buildSearchUrl(provider, prompt);
-      const searchResults = await fetchTopSearchResults(provider, prompt, 5);
+      const html = await fetchSearchHtml(provider, prompt);
+      const searchResults = html ? await parseSearchResultsOffscreen(html, 5) : [];
 
       const payload: DecisionPayload = {
         type: "DECISION",

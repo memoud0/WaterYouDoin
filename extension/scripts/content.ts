@@ -209,11 +209,11 @@ function createNudgeUI() {
 
   const title = document.createElement("div");
   title.className = "title";
-  title.textContent = "Quick factual results";
+  title.textContent = "Top 5 Dogpile results";
 
   const subtitle = document.createElement("div");
   subtitle.className = "subtitle";
-  subtitle.textContent = "You don’t need AI for this. Pick a result or continue anyway.";
+  subtitle.textContent = "Here are the top 5 Dogpile results with the site name and full URL.";
 
   const resultsList = document.createElement("div");
   resultsList.className = "results";
@@ -267,7 +267,7 @@ function createNudgeUI() {
     if (!results.length) {
       const empty = document.createElement("div");
       empty.className = "empty";
-      empty.textContent = "Couldn’t fetch quick results right now. You can still open the search results or ask ChatGPT.";
+      empty.textContent = "Couldn’t fetch the top 5 Dogpile results right now. You can still open the full search or ask ChatGPT.";
       resultsList.appendChild(empty);
       return;
     }
@@ -324,8 +324,8 @@ function createNudgeUI() {
     onAskAi = onAsk;
     anchor = anchorEl ?? anchor;
     mascot.src = chrome.runtime.getURL("extension/assets/mascot/ICECUBE.PNG");
-    title.textContent = "This looks factual";
-    subtitle.textContent = "Stay on ChatGPT. Here are quick non-AI results you can open in a new tab.";
+    title.textContent = "Top 5 Dogpile results";
+    subtitle.textContent = "Here are the top 5 Dogpile results with the site name and full URL.";
     renderResults(results, promptForMetrics);
     resultsList.style.display = "block";
     openSearchBtn.style.display = url ? "inline-block" : "none";
