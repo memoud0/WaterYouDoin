@@ -15,6 +15,7 @@ const processUpdate = (
 
         next.lastPrompts.lastTimestamp = Date.now();
         return next;
+        
     };
 
 export const recordFactualRedirect = async () => {
