@@ -68,5 +68,12 @@ p, .body-text {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
+}
 
+.popup-link {
+  display: inline-block;
+  margin-top: 10px;
+  font-weight: 600;
+  color: #005DAD;
+  text-decoration: underline;
 }
