@@ -1,9 +1,7 @@
-import { factualOrNot } from "../core/classify/factualOrNot";
+import { classifyComposite } from "../core/classify/segments";
 import MODEL_WEIGHTS from "../core/classify/modelWeights";
 import { buildSearchUrl } from "../core/redirect/search";
-
-import { getStats, StoredStats } from "../core/storage/schema";
-
+import { getStats, updateStats, StoredStats } from "../core/storage/schema";
 import {
   recordFactualRedirect,
   recordLowValueBlock,
@@ -12,14 +10,13 @@ import {
   recordAskAIAnyway,
   recordDuplicateBlocked,
 } from "../core/metrics/counters";
-
 import { normalize } from "../core/utils/text";
 import { fnv1a32 } from "../core/utils/hash";
-import { classifyComposite } from "../core/classify/segments";
 
-function makeNudgeId(): string {
-  return `nudge_${Math.random().toString(16).slice(2)}_${Date.now()}`;
-}
+type BackgroundMsg =
+  | { type: "GET_STATS" }
+  | { type: "PROMPT_SUBMIT"; prompt: string; timestamp?: number }
+  | { type: "NUDGE_RESULT"; choice: "TRY_MYSELF" | "ASK_AI_ANYWAY"; waitedMs?: number };
 
 type DecisionPayload = {
   type: "DECISION";
@@ -32,38 +29,41 @@ type DecisionPayload = {
   url?: string;
   nudgeId?: string;
   suggestedWaitMs?: number;
+  segments?: unknown;
   metricsSnapshot?: StoredStats;
 };
+
+function makeNudgeId(): string {
+  return `nudge_${Math.random().toString(16).slice(2)}_${Date.now()}`;
+}
 
 function broadcastMetrics(stats?: StoredStats) {
   if (!stats) return;
   chrome.runtime.sendMessage({ type: "METRICS_UPDATE", data: stats });
 }
 
-chrome.runtime.onMessage.addListener((msg: any, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((msg: BackgroundMsg, sender, sendResponse) => {
   (async () => {
-    if (msg?.type === "GET_STATS") {
+    if (msg.type === "GET_STATS") {
       const s = await getStats();
       sendResponse({ type: "STATS", data: s });
       return;
     }
 
-    if (msg?.type === "NUDGE_RESULT") {
-      const { choice, waitedMs } = msg as { choice: "TRY_MYSELF" | "ASK_AI_ANYWAY"; waitedMs?: number };
-
+    if (msg.type === "NUDGE_RESULT") {
+      const { choice, waitedMs } = msg;
       let stats: StoredStats | undefined;
       if (choice === "TRY_MYSELF") {
         stats = await recordTryMyself(waitedMs ?? 0);
       } else {
         stats = await recordAskAIAnyway();
       }
-
       broadcastMetrics(stats);
       sendResponse({ ok: true, metricsSnapshot: stats });
       return;
     }
 
-    if (msg?.type !== "PROMPT_SUBMIT") {
+    if (msg.type !== "PROMPT_SUBMIT") {
       sendResponse({ ok: false });
       return;
     }
@@ -85,35 +85,25 @@ chrome.runtime.onMessage.addListener((msg: any, sender, sendResponse) => {
     const prompt = String(msg.prompt ?? "");
     const timestamp = Number(msg.timestamp ?? Date.now());
 
-    // ----- Duplicate memory -----
+    // Duplicate memory bookkeeping (store hash/timestamp)
     const norm = normalize(prompt);
     const hash = fnv1a32(norm);
-
-    const lastHash = stats.lastPrompts.lastHash;
-    const lastTimestamp = stats.lastPrompts.lastTimestamp;
-
-    const composite = classifyComposite(prompt, {
-      lastHash,
-      lastTimestamp,
-      nowTimestamp: timestamp,
-      duplicateWindowMs: 8000,
-      modelWeights: MODEL_WEIGHTS,
-    });
-    const r = composite;
-
-    // ✅ update lastHash + lastTimestamp immediately so duplicate logic works
-    // (your counters currently set lastTimestamp = Date.now(), but not lastHash)
     await updateStats((prev) => {
       prev.lastPrompts.lastHash = hash;
       prev.lastPrompts.lastTimestamp = timestamp;
       return prev;
     });
 
-    if (stats.settings.debugLogs) {
-      console.log("[WaterYouDoin] classify:", { prompt, result: r });
-    }
+    const lastHash = stats.lastPrompts.lastHash;
+    const lastTimestamp = stats.lastPrompts.lastTimestamp;
 
-    // ----- Decisions + counters -----
+    const r = classifyComposite(prompt, {
+      lastHash,
+      lastTimestamp,
+      nowTimestamp: timestamp,
+      duplicateWindowMs: 8000,
+      modelWeights: MODEL_WEIGHTS,
+    });
 
     // Duplicate (special-cased)
     if (r.classification === "LOW_VALUE" && r.signals?.includes("duplicate_prompt")) {

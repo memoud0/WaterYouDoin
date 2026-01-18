@@ -1,0 +1,156 @@
+/* ---------- BASE ---------- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Quicksand", sans-serif;
+}
+
+/* ---------- FRAME ---------- */
+
+.top-frame {
+  position: relative; /* Needed for settings button positioning */
+  width: 360px;
+  min-height: 520px;
+  padding: 25px;
+  background-color: #edf9ff;
+  /* FIXED PATH: Go up 2 levels to find assets */
+  background-image: url("/extension/assets/waves.png"); 
+  background-repeat: no-repeat;
+  background-size: 100%;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* ---------- SETTINGS BUTTON (NEW) ---------- */
+#settings-btn {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    cursor: pointer;
+    z-index: 100;
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+.logo {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+#settings-btn:hover {
+    opacity: 1;
+    transform: rotate(20deg) scale(1.1);
+}
+
+/* ---------- TITLE ---------- */
+
+.top-title {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  color: #edf9ff;
+  margin-bottom: 70px;
+}
+
+/* ---------- HERO ROW ---------- */
+
+.row.hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.column-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.column-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ---------- MASCOT ---------- */
+
+.top-cube {
+  width: 120px;
+  height: auto;
+}
+
+/* ---------- TEXT ---------- */
+
+.top-text {
+  font-size: 18px;
+  line-height: 28px;
+  color: #005dad;
+}
+
+.top-text-stat {
+  font-size: 40px;
+  font-weight: 700;
+  margin: 4px 0;
+  color: #005dad;
+}
+
+/* ---------- STATS ---------- */
+
+.top-subtitle {
+  margin: 24px 0 12px;
+  font-weight: 700;
+  font-size: 24px;
+  text-align: center;
+  color: #61aef3;
+}
+
+.three-column {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.column {
+  flex: 1;
+  text-align: center;
+}
+
+/* ---------- SEVERITY BAR ---------- */
+
+.severity-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 20px;
+}
+
+.severity-bar {
+  width: 80%;
+  max-width: 300px;
+}
+
+.severity-slider {
+  position: absolute;
+  bottom: -5px; 
+  left: 15%; /* Will be updated by JS */
+  transform: translateX(-50%);
+  width: 24px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.20));
+  transition: left 0.5s ease-out; /* Smooth movement */
+}
+
+/* ---------- FOOTER ---------- */
+
+.footer-text {
+  margin-top: 12px;
+  text-align: center;
+  font-size: 16px;
+  color: #005dad;
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="/extension/assets/mascot/ICECUBE.PNG" alt="Logo" class="logo">
+      <h1>Preferences</h1>
+    </div>
+
+    <form id="options-form">
+      <div class="card">
+        <div class="setting-row">
+          <label for="enabled">Enable</label>
+          <input type="checkbox" id="enabled">
+        </div>
+        <p class="desc">Toggle the extension on or off globally.</p>
+      </div>
+
+      <div class="card">
+        <h3>Cognitive Nudge</h3>
+        <div class="setting-row">
+          <label for="enableNudge">Enable Reasoning Pause</label>
+          <input type="checkbox" id="enableNudge">
+        </div>
+        
+        <div class="setting-row">
+          <label for="nudgeWaitMs">Thinking Time (ms)</label>
+          <select id="nudgeWaitMs">
+            <option value="30000">30 Seconds (Fast)</option>
+            <option value="60000">60 Seconds (Standard)</option>
+            <option value="90000">90 Seconds (Deep Work)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Search Redirect</h3>
+        <div class="setting-row">
+          <label for="searchProvider">Non-AI Search Provider</label>
+          <select id="searchProvider">
+            <option value="DOGPILE">Dogpile (Sustainable)</option>
+            <option value="GOOGLE">Google</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Developer</h3>
+        <div class="setting-row">
+          <label for="debugLogs">Show Debug Logs</label>
+          <input type="checkbox" id="debugLogs">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="save-btn">Save Settings</button>
+        <span id="status"></span>
+      </div>
+    </form>
+  </div>
+  <script type="module" src="options.ts"></script>
+</body>
+</html>
