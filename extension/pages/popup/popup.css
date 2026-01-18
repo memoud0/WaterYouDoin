@@ -137,7 +137,7 @@ body {
 .severity-slider {
   position: absolute;
   bottom: -5px; 
-  left: 0%; /* Will be updated by JS */
+  left: 15%; /* Will be updated by JS */
   transform: translateX(-50%);
   width: 24px;
   height: auto;
